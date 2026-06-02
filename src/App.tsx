@@ -24,7 +24,8 @@ import {
   X,
   CreditCard,
   Target,
-  Zap
+  Zap,
+  ChevronDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ShowcaseImg4 from './assets/images/regenerated_image_1778503906343.jpg';
@@ -58,6 +59,36 @@ const Logo = ({ scrolled, light = false }: { scrolled?: boolean, light?: boolean
           TECHNOLOGIES
         </span>
       </div>
+    </div>
+  );
+};
+
+const FAQItem = ({ question, answer }: { question: string, answer: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="border-b border-slate-200 py-6">
+      <button 
+        onClick={() => setIsOpen(!isOpen)} 
+        className="flex w-full items-center justify-between text-left focus:outline-none group"
+      >
+        <h4 className="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors pr-6">{question}</h4>
+        <div className={`flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+          <ChevronDown className={`w-6 h-6 ${isOpen ? 'text-brand-600' : 'text-slate-400 group-hover:text-brand-600'}`} />
+        </div>
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }} 
+            animate={{ height: 'auto', opacity: 1 }} 
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <p className="pt-4 text-slate-600 leading-relaxed">{answer}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -678,6 +709,34 @@ export default function App() {
                 <h4 className="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors">{post.title}</h4>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-24 bg-slate-50">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="text-brand-600 font-bold uppercase tracking-widest text-sm mb-4">Frequently Asked Questions</h2>
+            <h3 className="text-4xl font-bold text-slate-900 leading-tight">Everything You Need to Know</h3>
+          </div>
+          <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100">
+            <FAQItem 
+              question="How accurate is the GPS tracking system?" 
+              answer="Our GPS tracking system utilizes advanced satellite technology combined with cellular networks, providing extreme accuracy. Under optimal conditions, location data is precise within 2.5 to 5 meters. You'll see real-time updates every few seconds directly on your dashboard." 
+            />
+            <FAQItem 
+              question="What are the ongoing subscription costs?" 
+              answer="We offer flexible subscription plans based on your specific needs, whether you are managing a single vehicle or an entire fleet. Subscriptions cover cellular data, cloud hosting, and continuous software updates. Contact our sales team for a custom quote that perfectly matches your scale and requirements." 
+            />
+            <FAQItem 
+              question="Is the tracking hardware durable?" 
+              answer="Absolutely. Our hardware is built to withstand rigorous conditions. Units are encased in industrial-grade, weather-resistant materials designed to handle extreme temperatures, dust, and moisture. Rest assured, your devices will perform reliably whether on a smooth highway or rugged terrain." 
+            />
+            <FAQItem 
+              question="Can I easily transfer a tracker to another vehicle?" 
+              answer="Yes, our hardwired and plug-and-play models can both be transferred between vehicles. While OBD-II plug-and-play devices can be swapped in minutes by anyone, we recommend one of our certified technicians to help transfer hardwired units to ensure proper installation." 
+            />
           </div>
         </div>
       </section>
