@@ -19,6 +19,7 @@ import {
   CheckCircle2, 
   Users, 
   Lock, 
+  Unlock,
   Activity,
   Menu,
   X,
@@ -34,7 +35,9 @@ import {
   Copy,
   Check,
   Info,
-  ArrowLeft
+  ArrowLeft,
+  Wifi,
+  Laptop
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ShowcaseImg4 from './assets/images/regenerated_image_1778503906343.jpg';
@@ -42,7 +45,7 @@ import HowItWorksImg from './assets/images/regenerated_image_1778504127387.jpg';
 import LogoIcon from './assets/images/regenerated_image_1778504701095.jpg';
 
 // Types
-type SectionId = 'home' | 'services' | 'about' | 'pricing' | 'contact' | 'how-it-works';
+type SectionId = 'home' | 'services' | 'app-sync' | 'why-us' | 'about' | 'pricing' | 'contact' | 'how-it-works';
 
 const HERO_IMAGE = "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&q=80&w=2070";
 
@@ -194,11 +197,32 @@ export default function App() {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showTermsOfService, setShowTermsOfService] = useState(false);
 
+  // Authentication states
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [email, setEmail] = useState('admin@alvary.co.zw');
+  const [password, setPassword] = useState('admin9904');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loginStep, setLoginStep] = useState('');
+  const [loginStepIndex, setLoginStepIndex] = useState(0);
+  const [loginError, setLoginError] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   // Quick Help state variables
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [selectedTopicId, setSelectedTopicId] = useState('device-reset');
   const [mobileView, setMobileView] = useState<'list' | 'detail'>('list');
   const [copiedText, setCopiedText] = useState<string | null>(null);
+
+  // Mobile App Integration Simulator states
+  const [syncPlate, setSyncPlate] = useState('AEG-9904');
+  const [simulatedVehicle, setSimulatedVehicle] = useState('Toyota Hilux GD6');
+  const [simulatedSpeed, setSimulatedSpeed] = useState(0);
+  const [isEngineOn, setIsEngineOn] = useState(true);
+  const [isFuelRelayLocked, setIsFuelRelayLocked] = useState(false);
+  const [mockNotification, setMockNotification] = useState<{ title: string; body: string; type: 'info' | 'danger' | 'success' } | null>(null);
+  const [showPairingQR, setShowPairingQR] = useState(false);
+  const [pairingToken, setPairingToken] = useState('ALV-9904-SYNC');
+  const [showPairingSuccess, setShowPairingSuccess] = useState(false);
 
   const handleCopyCommand = (command: string) => {
     navigator.clipboard.writeText(command);
@@ -251,6 +275,276 @@ export default function App() {
     setIsMenuOpen(false);
   };
 
+  if (!isLoggedIn) {
+    const handleLoginSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!email.trim() || !password.trim()) {
+        setLoginError('Please enter your email and password credentials.');
+        return;
+      }
+      setLoginError('');
+      setIsLoggingIn(true);
+      
+      const steps = [
+        "Initializing terminal handshake protocol...",
+        "Querying Harare cloud node gateways...",
+        "Authenticating RSA secure credentials...",
+        "Syncing Alvary Zimbabwe telematics database...",
+        "Establishing persistent GPRS server stream..."
+      ];
+      
+      let stepIdx = 0;
+      setLoginStep(steps[0]);
+      setLoginStepIndex(0);
+      
+      const interval = setInterval(() => {
+        stepIdx++;
+        if (stepIdx < steps.length) {
+          setLoginStep(steps[stepIdx]);
+          setLoginStepIndex(stepIdx);
+        } else {
+          clearInterval(interval);
+          setIsLoggingIn(false);
+          setIsLoggedIn(true);
+        }
+      }, 400);
+    };
+
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col lg:flex-row relative overflow-hidden font-sans text-slate-100 select-none">
+        {/* Dynamic Grid Background Overlay */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-40 pointer-events-none" />
+        <div className="absolute -top-40 -left-40 w-96 h-96 bg-brand-600/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none" />
+
+        {/* Left Module: Live Workstation Visualizer Dashboard */}
+        <div className="hidden lg:flex lg:w-1/2 p-16 flex-col justify-between relative bg-slate-950 border-r border-slate-900/50 z-10 overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[120px] pointer-events-none" />
+          
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center overflow-hidden shadow-lg shadow-brand-600/20">
+              <img src={LogoIcon} alt="Alvary" className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <span className="text-xl font-black tracking-tight leading-none text-white block">ALVARY CENTRAL</span>
+              <span className="text-[9px] font-bold tracking-[0.25em] uppercase text-brand-400 block mt-0.5">TELEMATICS GATEWAY</span>
+            </div>
+          </div>
+
+          <div className="max-w-xl space-y-6 relative my-auto">
+            <span className="text-[10px] font-black uppercase bg-brand-500/10 text-brand-400 px-3.5 py-1.5 rounded-full border border-brand-500/20 inline-block tracking-widest">
+              ⚡ LIVE WORKSTATION MATRIX
+            </span>
+            <h1 className="text-4xl xl:text-5xl font-black text-white font-sans tracking-tight leading-tight">
+              Secure Vehicle Tracking & <span className="text-brand-500">Fleet Dispatch Portal</span>
+            </h1>
+            <p className="text-slate-400 text-base leading-relaxed">
+              Zimbabwe's premiere real-time tracking console. Monitor remote Solenoid engine cut-offs, analyze highway speed zones, manage geofencing safety boundaries, and sync directly with user smartphones.
+            </p>
+
+            {/* Simulated Live telemetry card */}
+            <div className="bg-slate-900/40 backdrop-blur-md rounded-2xl p-6 border border-slate-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-slate-400 tracking-wider uppercase flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Gateway Operations Status
+                </span>
+                <span className="text-[10px] uppercase font-bold text-emerald-400 font-mono">100% SECURE</span>
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                  <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-wider block font-mono">Harare Node</span>
+                  <span className="text-sm font-black text-white block mt-0.5">🟢 ACTIVE</span>
+                  <span className="text-[8px] text-slate-500 block leading-none mt-1">2.4ms latency</span>
+                </div>
+                <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                  <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-wider block font-mono">Bulawayo Node</span>
+                  <span className="text-sm font-black text-white block mt-0.5">🟢 ONLINE</span>
+                  <span className="text-[8px] text-slate-500 block leading-none mt-1">4.1ms latency</span>
+                </div>
+                <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                  <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-wider block font-mono">Gweru Node</span>
+                  <span className="text-sm font-black text-white block mt-0.5">🟢 STANDBY</span>
+                  <span className="text-[8px] text-slate-500 block leading-none mt-1">Ready</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-slate-500 text-xs border-t border-slate-900/60 pt-6">
+            <span>© 2026 Alvary Technologies Zimbabwe</span>
+            <span className="font-mono text-[10px]">v4.8 - Harare Central Hub</span>
+          </div>
+        </div>
+
+        {/* Right Module: Safe Secure Login Card Frame */}
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-16 relative z-10 bg-slate-900/10 backdrop-blur-md min-h-screen">
+          <div className="w-full max-w-md bg-slate-900/95 backdrop-blur-xl rounded-3xl border border-slate-800 p-8 md:p-10 shadow-2xl relative overflow-hidden">
+            
+            <div className="absolute top-0 right-0 w-48 h-48 bg-brand-500/5 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="mb-8 space-y-2">
+              <div className="lg:hidden flex items-center gap-2.5 mb-6">
+                <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center overflow-hidden">
+                  <img src={LogoIcon} alt="Alvary" className="w-full h-full object-cover" />
+                </div>
+                <span className="text-sm font-black tracking-tight text-white leading-none uppercase">ALVARY TECHNOLOGIES</span>
+              </div>
+              
+              <span className="text-[10px] uppercase font-black bg-slate-950 border border-slate-850 px-3 py-1.5 rounded-md inline-block tracking-widest text-brand-400 font-mono">
+                🔒 SECURITY COMPLIANT GATEWAY
+              </span>
+              <h2 className="text-2xl font-black text-white font-sans tracking-tight">Client Hub Sign In</h2>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Connect your master terminal account parameters to access active telemetry dispatch panels.
+              </p>
+            </div>
+
+            {/* Instant Demo Autoload Banner */}
+            <div className="bg-slate-950 rounded-2xl p-4 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+              <div className="text-left font-sans">
+                <span className="text-[9px] font-black uppercase text-slate-500 leading-tight block tracking-wider">Access Node</span>
+                <span className="text-xs font-bold text-slate-300 block mt-0.5 leading-snug">Demo account preloaded</span>
+                <span className="text-[10px] text-brand-400 block leading-tight font-mono mt-0.5">admin@alvary.co.zw</span>
+              </div>
+              <button 
+                type="button"
+                onClick={() => {
+                  setEmail('admin@alvary.co.zw');
+                  setPassword('admin9904');
+                  setLoginError('');
+                }}
+                className="w-full sm:w-auto bg-brand-600 hover:bg-brand-700 active:scale-95 text-white font-bold text-xs px-3 py-2 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer shrink-0"
+              >
+                <Key size={12} />
+                Instant Autofill
+              </button>
+            </div>
+
+            <form onSubmit={handleLoginSubmit} className="space-y-4">
+              {loginError && (
+                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-medium">
+                  ⚠️ {loginError}
+                </div>
+              )}
+
+              <div className="space-y-1">
+                <label className="block text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Email Address</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                    <Mail size={16} />
+                  </span>
+                  <input 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="operator@alvary.co.zw"
+                    disabled={isLoggingIn}
+                    className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl pl-10 pr-4 py-2.5 placeholder-slate-650 text-xs focus:outline-none focus:border-brand-500 transition-all font-medium disabled:opacity-50"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex justify-between items-center">
+                  <label className="block text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Security Key</label>
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setLoginError("Demo accounts passwords are pre-secured. Click Instant Autofill to restore defaults.");
+                    }}
+                    className="text-[9px] font-bold text-brand-500 hover:text-brand-400 transition-colors uppercase tracking-wide cursor-pointer"
+                  >
+                    Forgot?
+                  </button>
+                </div>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                    <Lock size={16} />
+                  </span>
+                  <input 
+                    type={passwordVisible ? "text" : "password"} 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    disabled={isLoggingIn}
+                    className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl pl-10 pr-16 py-2.5 placeholder-slate-650 text-xs focus:outline-none focus:border-brand-500 transition-all font-mono disabled:opacity-50"
+                  />
+                  <button 
+                    type="button" 
+                    disabled={isLoggingIn}
+                    onClick={() => setPasswordVisible(!passwordVisible)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-[10px] font-bold text-slate-500 hover:text-slate-300 transition-colors cursor-pointer select-none uppercase tracking-widest"
+                  >
+                    {passwordVisible ? "Hide" : "Show"}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center pt-1">
+                <input 
+                  id="remember" 
+                  type="checkbox" 
+                  defaultChecked
+                  className="w-3.5 h-3.5 rounded text-brand-500 bg-slate-950 border-slate-800 focus:ring-brand-500 border-none cursor-pointer" 
+                />
+                <label htmlFor="remember" className="ml-2 text-xs text-slate-400 leading-none select-none cursor-pointer">
+                  Remember terminal parameters
+                </label>
+              </div>
+
+              {/* Login Submit Command */}
+              {isLoggingIn ? (
+                <div className="space-y-3 pt-2">
+                  <button 
+                    type="button" 
+                    disabled
+                    className="w-full bg-brand-600/50 text-slate-300 font-bold py-2.5 rounded-xl cursor-not-allowed text-xs flex items-center justify-center gap-1.5"
+                  >
+                    <RefreshCw size={14} className="animate-spin text-white" />
+                    Connecting...
+                  </button>
+                  <div className="space-y-1.5 font-mono">
+                    <div className="flex items-center justify-between text-[8px] font-black uppercase text-slate-400">
+                      <span>Gateway handshake</span>
+                      <span className="text-brand-400">{Math.round((loginStepIndex + 1) * 20)}%</span>
+                    </div>
+                    {/* Progress Bar visual indicator */}
+                    <div className="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden border border-slate-850">
+                      <motion.div 
+                        initial={{ width: '0%' }}
+                        animate={{ width: `${(loginStepIndex + 1) * 20}%` }}
+                        transition={{ duration: 0.3 }}
+                        className="h-full bg-brand-500"
+                      />
+                    </div>
+                    <p className="text-[9px] text-brand-400 italic text-center leading-none mt-1 animate-pulse">
+                      {loginStep}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <button 
+                  type="submit" 
+                  className="w-full bg-brand-600 hover:bg-brand-700 active:scale-98 text-white font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-brand-600/10"
+                >
+                  <Shield size={14} />
+                  Establish Dispatch Connection
+                </button>
+              )}
+            </form>
+
+            <div className="border-t border-slate-800/60 pt-4 mt-6 flex flex-col text-center space-y-1 select-none">
+              <span className="text-[8px] text-slate-500 uppercase font-black">Authorized Personnel Only</span>
+              <p className="text-[9px] text-slate-500 leading-normal max-w-xs mx-auto">
+                System activities are logged securely under Zimbabwe cyber security directives.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 overflow-x-hidden">
       {/* Navigation */}
@@ -266,7 +560,7 @@ export default function App() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            {['Home', 'Services', 'Why Us', 'About', 'Contact'].map((item) => (
+            {['Home', 'Services', 'App Sync', 'Why Us', 'About', 'Contact'].map((item) => (
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
@@ -284,6 +578,28 @@ export default function App() {
               <MessageCircle size={18} />
               WhatsApp Us
             </a>
+
+            {/* Operator Session & Logout options */}
+            <div className={`flex items-center gap-3 border-l ${scrolled ? 'border-slate-200 text-slate-850' : 'border-white/20 text-white'} pl-5 ml-1 select-none`}>
+              <div className="flex flex-col text-right">
+                <span className={`text-[9px] font-black uppercase tracking-wider ${scrolled ? 'text-brand-600' : 'text-brand-400 font-bold'}`}>CONSOLE SESSION</span>
+                <span className={`text-[11px] font-bold ${scrolled ? 'text-slate-500' : 'text-slate-300'}`}>admin@alvary.co.zw</span>
+              </div>
+              <button 
+                onClick={() => {
+                  setIsLoggedIn(false);
+                  setIsLoggingIn(false);
+                }} 
+                className={`p-2 rounded-xl transition-all flex items-center justify-center cursor-pointer ${
+                  scrolled 
+                    ? 'bg-rose-50 hover:bg-rose-105 hover:bg-rose-100 text-rose-600 border border-rose-100' 
+                    : 'bg-white/10 hover:bg-white/15 text-rose-400 border border-white/5 shadow-inner'
+                }`}
+                title="Disconnect Terminal Session"
+              >
+                <X size={15} />
+              </button>
+            </div>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -306,7 +622,7 @@ export default function App() {
             className="fixed inset-0 z-40 bg-white pt-24 px-6 md:hidden"
           >
             <div className="flex flex-col gap-6 text-center">
-              {['Home', 'Services', 'Why Us', 'About', 'Contact'].map((item) => (
+              {['Home', 'Services', 'App Sync', 'Why Us', 'About', 'Contact'].map((item) => (
                 <button
                   key={item}
                   onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
@@ -323,6 +639,17 @@ export default function App() {
                 <a href="https://wa.me/263781899027" className="bg-brand-600 text-white py-4 rounded-xl font-bold text-lg">
                   WhatsApp Us
                 </a>
+                <button 
+                  onClick={() => {
+                    setIsLoggedIn(false);
+                    setIsLoggingIn(false);
+                    setIsMenuOpen(false);
+                  }}
+                  className="bg-rose-50 text-rose-600 border border-rose-100 py-3.5 rounded-xl font-bold text-lg cursor-pointer transition-all hover:bg-rose-100/50 flex items-center justify-center gap-2"
+                >
+                  <Lock size={18} />
+                  Disconnect Session
+                </button>
               </div>
             </div>
           </motion.div>
@@ -331,12 +658,15 @@ export default function App() {
 
       {/* Hero Section */}
       <section id="home" className="relative min-h-screen flex items-center pt-20">
-        <div className="absolute inset-0">
-          <img 
-            src={HERO_IMAGE} 
-            alt="Vehicle Tracking" 
+        <div className="absolute inset-0 overflow-hidden">
+          <video 
+            src="https://assets.mixkit.co/videos/preview/mixkit-car-driving-on-a-highway-at-sunset-41484-large.mp4" 
+            autoPlay 
+            loop 
+            muted 
+            playsInline 
+            poster={HERO_IMAGE}
             className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-brand-950/90 via-brand-900/60 to-transparent" />
         </div>
@@ -679,7 +1009,7 @@ export default function App() {
       {/* Fleet Demo Section */}
       <section className="py-24 bg-brand-50">
         <div className="container mx-auto px-6">
-          <div className="bg-white rounded-[3rem] border border-brand-100 shadow-xl overflow-hidden flex flex-col lg:row items-stretch">
+          <div className="bg-white rounded-[3rem] border border-brand-100 shadow-xl overflow-hidden flex flex-col lg:flex-row items-stretch">
             <div className="lg:w-1/2 p-12 md:p-20 flex flex-col justify-center">
               <div className="inline-flex items-center gap-2 bg-brand-100 text-brand-700 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider mb-8">
                 <Truck size={14} /> 5+ Vehicles Fleet Offer
@@ -711,12 +1041,15 @@ export default function App() {
                 Claim Free Trial <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
               </button>
             </div>
-            <div className="lg:w-1/2 relative bg-brand-900 min-h-[400px]">
-              <img 
-                src="https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&q=80&w=2070" 
-                alt="Fleet Monitoring" 
+            <div className="lg:w-1/2 relative bg-brand-900 min-h-[400px] overflow-hidden">
+              <video 
+                src="https://assets.mixkit.co/videos/preview/mixkit-cargo-truck-driving-on-highway-41452-large.mp4" 
+                autoPlay 
+                loop 
+                muted 
+                playsInline 
+                poster="https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&q=80&w=2070"
                 className="absolute inset-0 w-full h-full object-cover opacity-80"
-                referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-950 to-transparent lg:bg-gradient-to-r" />
               <div className="absolute inset-0 flex items-center justify-center p-12 text-center lg:text-left">
@@ -725,6 +1058,602 @@ export default function App() {
                   <div className="text-xl text-brand-100 font-bold uppercase tracking-[0.2em]">Vehicle Scale Reward</div>
                   <p className="text-brand-200/70 mt-4 italic" style={{ color: '#ccd1de' }}>"Optimizing performance for Zimbabwe's growing logistics companies."</p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Alvary Universal App Sync Section & Companion Integration Portal */}
+      <section id="app-sync" className="py-24 bg-slate-950 border-t border-b border-slate-900 relative overflow-hidden">
+        {/* Decorative Grid Grid Overlay */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-35" />
+        <div className="absolute top-0 left-12 w-96 h-96 bg-brand-600/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-12 right-12 w-96 h-96 bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="container mx-auto px-6 max-w-7xl relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-brand-400 font-black uppercase tracking-widest text-xs bg-brand-950/85 px-4 py-2 rounded-full border border-brand-800/80 mb-5 inline-block">
+              ⚡ LIVE TELMETRY SYNC HUB
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-white font-sans tracking-tight leading-tight">
+              Website & <span className="text-brand-500">Mobile App Integration</span>
+            </h2>
+            <p className="text-slate-400 text-lg mt-4 leading-relaxed">
+              Experience total hardware synchronization. Fire virtual commands from our online dispatch portal on the left, and watch the companion mobile app mirror the status instantaneously in real-time.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch max-w-7xl mx-auto">
+            
+            {/* Left Module: Web Dispatch Portal Mockup */}
+            <div className="lg:col-span-7 bg-slate-900/90 backdrop-blur-xl rounded-[2.5rem] border border-slate-800 p-8 md:p-10 flex flex-col justify-between shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-brand-500/5 rounded-full blur-3xl pointer-events-none" />
+              
+              <div>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-6 mb-8 gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-brand-600/20 text-brand-400 flex items-center justify-center border border-brand-500/20">
+                      <Laptop size={20} />
+                    </div>
+                    <div>
+                      <h4 className="text-[10px] uppercase font-black tracking-widest text-brand-500">Fleet Control Portal</h4>
+                      <h3 className="text-lg font-extrabold text-white">Alvary Central Web Console</h3>
+                    </div>
+                  </div>
+                  <div className="inline-flex self-start sm:self-auto items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold font-mono">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    Secure Link
+                  </div>
+                </div>
+
+                {/* Simulated Vehicle Settings */}
+                <div className="bg-slate-950/60 rounded-2xl p-6 border border-slate-850 mb-8 space-y-6">
+                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-500" /> Web-Mobile Pairing Properties
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-wider">Vehicle Plate Number</label>
+                      <input 
+                        type="text" 
+                        value={syncPlate} 
+                        onChange={(e) => {
+                          setSyncPlate(e.target.value.toUpperCase());
+                          setPairingToken(`ALV-${e.target.value.toUpperCase()}-SYNC`);
+                        }}
+                        placeholder="e.g. AEG-9904"
+                        className="w-full bg-slate-900 border border-slate-800 text-white font-mono font-bold tracking-widest rounded-xl px-4 py-3 placeholder-slate-600 focus:outline-none focus:border-brand-500 transition-colors uppercase"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-wider">Vehicle Model & Label</label>
+                      <select 
+                        value={simulatedVehicle}
+                        onChange={(e) => setSimulatedVehicle(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-800 text-white font-bold rounded-xl px-4 py-3 focus:outline-none focus:border-brand-500 transition-colors"
+                      >
+                        <option value="Toyota Hilux GD6">Toyota Hilux GD6 (Harare)</option>
+                        <option value="Mazda Axela Sport">Mazda Axela (Bulawayo)</option>
+                        <option value="Honda Fit Shuttle">Honda Fit (Gweru Taxi)</option>
+                        <option value="Mercedes Benz GLE">Mercedes GL E-Class (Mutare)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-900">
+                    <div className="text-xs text-slate-400 leading-relaxed text-center sm:text-left">
+                      Edit details above to observe active state changes instantly mapped in the phone app mockup.
+                    </div>
+                    <button 
+                      onClick={() => {
+                        setShowPairingQR(!showPairingQR);
+                        setShowPairingSuccess(false);
+                      }}
+                      className="w-full sm:w-auto bg-slate-900 hover:bg-slate-850 text-slate-200 border border-slate-850 font-bold px-4 py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+                    >
+                      <Radio size={14} className="text-brand-500" />
+                      {showPairingQR ? "Hide Pairing Code" : "Show Sync QR Code"}
+                    </button>
+                  </div>
+
+                  {/* Dynamic QR Pairing Code Section */}
+                  <AnimatePresence>
+                    {showPairingQR && (
+                      <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="bg-slate-900 rounded-xl p-5 border border-slate-800 flex flex-col md:flex-row items-center gap-6 mt-4">
+                          <div className="bg-white p-3 rounded-2xl flex-shrink-0 border-4 border-slate-700 shadow-xl">
+                            {/* Stylized CSS QR Code Vector */}
+                            <div className="w-24 h-24 relative flex flex-wrap p-1 bg-white select-none">
+                              {/* QR Corners */}
+                              <div className="absolute top-1 left-1 w-6 h-6 border-4 border-slate-900 bg-transparent rounded-xs flex items-center justify-center">
+                                <div className="w-1 h-1 bg-slate-900" />
+                              </div>
+                              <div className="absolute top-1 right-1 w-6 h-6 border-4 border-slate-900 bg-transparent rounded-xs flex items-center justify-center">
+                                <div className="w-1 h-1 bg-slate-900" />
+                              </div>
+                              <div className="absolute bottom-1 left-1 w-6 h-6 border-4 border-slate-900 bg-transparent rounded-xs flex items-center justify-center">
+                                <div className="w-1 h-1 bg-slate-900" />
+                              </div>
+                              {/* QR Fill Elements */}
+                              <div className="w-full h-full flex flex-wrap opacity-85 justify-center mt-2.5 ml-1.5 gap-0.5">
+                                <span className="bg-slate-900 w-2 h-2 rounded-2xs" />
+                                <span className="bg-slate-900 w-1 h-2 rounded-2xs" />
+                                <span className="bg-slate-900 w-3 h-1" />
+                                <span className="bg-slate-900 w-2 h-1.5 rounded-2xs" />
+                                <span className="bg-slate-900 w-1.5 h-2" />
+                                <span className="bg-slate-900 w-1 h-1" />
+                                <span className="bg-slate-950 w-2 h-2.5 rounded-2xs" />
+                                <span className="bg-slate-900 w-1.5 h-1.5" />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="space-y-2 text-center md:text-left flex-1">
+                            <span className="text-[9px] font-black uppercase bg-brand-500/10 text-brand-400 px-2.5 py-1 rounded-md border border-brand-500/20 inline-block tracking-wider">
+                              INTEGRATION TOKENS
+                            </span>
+                            <h5 className="font-bold text-sm text-white">Applet Dashboard Association</h5>
+                            <p className="text-xs text-slate-400 leading-relaxed">
+                              Scan this encrypted credential QR code inside the companion mobile app to pair your tracking account with the fleet telemetry server database instantly.
+                            </p>
+                            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 mt-4">
+                              <span className="font-mono bg-slate-950 border border-slate-800 px-3 py-1.5 rounded text-xs text-brand-404 text-brand-300 font-bold tracking-widest select-all">
+                                {pairingToken}
+                              </span>
+                              <button 
+                                onClick={() => {
+                                  setShowPairingSuccess(true);
+                                  setMockNotification({
+                                    title: "🔗 APP SYNCED SUCCESSFULLY",
+                                    body: `The companion mobile account has established a persistent websocket session with ${simulatedVehicle} [${syncPlate}].`,
+                                    type: 'success'
+                                  });
+                                  setTimeout(() => setShowPairingQR(false), 2000);
+                                }}
+                                className="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+                              >
+                                <Check size={12} strokeWidth={3} />
+                                Simulate QR Scan
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Real-Time Commands Console */}
+                <div className="space-y-6 mt-8">
+                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Dispatch Terminal Operations
+                  </h4>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    {/* ACC Ignition Trigger */}
+                    <button 
+                      onClick={() => {
+                        const nextState = !isEngineOn;
+                        setIsEngineOn(nextState);
+                        if (!nextState) setSimulatedSpeed(0);
+                        setMockNotification({
+                          title: nextState ? "🔑 ENGINE IGNITION INITIATED" : "🔌 IGNITION FEED SUSPENDED",
+                          body: nextState ? `ACC telemetry active on ${simulatedVehicle}. Live speed reporting unlocked.` : `ACC disabled. Hardware logged 'sleep status' after 10-minutes engine idle shutdown.`,
+                          type: nextState ? 'success' : 'info'
+                        });
+                      }}
+                      className={`flex items-start gap-4 p-5 rounded-2xl border text-left transition-all hover:scale-[1.01] hover:shadow-lg cursor-pointer ${
+                        isEngineOn 
+                          ? 'bg-slate-950/80 border-slate-800 hover:border-slate-750' 
+                          : 'bg-brand-950/15 border-brand-800/30 hover:border-brand-800/40'
+                      }`}
+                    >
+                      <div className={`p-3 rounded-xl border flex-shrink-0 ${
+                        isEngineOn 
+                          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+                          : 'bg-amber-500/10 border-amber-500/20 text-amber-500'
+                      }`}>
+                        <Zap size={18} />
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[10px] uppercase font-black text-slate-500 tracking-wider">Remote ACC Signal</span>
+                        <div className="font-bold text-white text-sm flex items-center gap-1.5">
+                          Toggle ACC State {isEngineOn ? '🟢' : '⚪'}
+                        </div>
+                        <p className="text-[11px] text-slate-400 leading-relaxed">
+                          ACC status: <span className="font-bold">{isEngineOn ? "Engine Running" : "Engine Switched Off"}</span>. Signals cloud node.
+                        </p>
+                      </div>
+                    </button>
+
+                    {/* Remote Engine Cutoff / Safety Relays */}
+                    <button 
+                      onClick={() => {
+                        const nextState = !isFuelRelayLocked;
+                        setIsFuelRelayLocked(nextState);
+                        setMockNotification({
+                          title: nextState ? "🚨 ENGINE IMMOBILIZED" : "✅ SAFETY DE-ACTIVATED",
+                          body: nextState ? `Solenoid fuel relay triggered for ${simulatedVehicle}! Internal fuel injection pathway locked successfully.` : `Relay released. Fuel pump flow normal. Vehicle may now crank safely.`,
+                          type: nextState ? 'danger' : 'success'
+                        });
+                      }}
+                      className={`flex items-start gap-4 p-5 rounded-2xl border text-left transition-all hover:scale-[1.01] hover:shadow-lg cursor-pointer ${
+                        isFuelRelayLocked 
+                          ? 'bg-rose-950/20 border-rose-800/30 hover:border-rose-800/50' 
+                          : 'bg-slate-950/80 border-slate-800 hover:border-slate-750'
+                      }`}
+                    >
+                      <div className={`p-3 rounded-xl border flex-shrink-0 ${
+                        isFuelRelayLocked 
+                          ? 'bg-rose-500/20 border-rose-500/35 text-rose-400 animate-pulse' 
+                          : 'bg-slate-850 border-slate-800 text-slate-400'
+                      }`}>
+                        {isFuelRelayLocked ? <Lock size={18} /> : <Unlock size={18} />}
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[10px] uppercase font-black text-slate-500 tracking-wider">Safety Core Relay</span>
+                        <div className="font-bold text-white text-sm">
+                          {isFuelRelayLocked ? "Unlock Fuel Relay" : "Remote Lock Fuel Relay"}
+                        </div>
+                        <p className="text-[11px] text-slate-400 leading-relaxed">
+                          Pump circuit: <span className="font-bold text-brand-400">{isFuelRelayLocked ? "FUEL FEED ISOLATED" : "FLOW ENABLED"}</span>.
+                        </p>
+                      </div>
+                    </button>
+
+                    {/* Over-speed safety tracking */}
+                    <button 
+                      onClick={() => {
+                        if (!isEngineOn) {
+                          setMockNotification({
+                            title: "⚠️ ACC Inactive",
+                            body: "Ignition must be toggled ON to register moving speed thresholds.",
+                            type: 'info'
+                          });
+                          return;
+                        }
+                        const nextSpeed = simulatedSpeed === 138 ? 0 : 138;
+                        setSimulatedSpeed(nextSpeed);
+                        if (nextSpeed > 100) {
+                          setMockNotification({
+                            title: "🚨 LIMIT VIOLATION RE-FETCHED",
+                            body: `Over-speeding alert dispatched to companion app: ${simulatedVehicle} cruising at ${nextSpeed} km/h along Harare Highway!`,
+                            type: 'danger'
+                          });
+                        } else {
+                          setMockNotification({
+                            title: "✅ Normal Highway Speeds",
+                            body: "Velocity levels returned back to safe local constraints.",
+                            type: 'success'
+                          });
+                        }
+                      }}
+                      className="flex items-start gap-4 p-5 rounded-2xl border border-slate-800 text-left transition-all hover:scale-[1.01] hover:shadow-lg bg-slate-950/80 hover:border-slate-750 cursor-pointer"
+                    >
+                      <div className={`p-3 rounded-xl border flex-shrink-0 ${
+                        simulatedSpeed > 100 
+                          ? 'bg-rose-500/10 border-rose-500/20 text-rose-400' 
+                          : 'bg-slate-850 border-slate-800 text-slate-400'
+                      }`}>
+                        <Activity size={18} />
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[10px] uppercase font-black text-slate-500 tracking-wider">Hardware Telematics</span>
+                        <div className="font-bold text-white text-sm">
+                          {simulatedSpeed > 100 ? "Reset Normal Speed" : "Simulate Speed Trigger (138 km/h)"}
+                        </div>
+                        <p className="text-[11px] text-slate-400 leading-relaxed">
+                          Moving speed: <span className="font-bold text-white">{simulatedSpeed} km/h</span>. Reports real-time.
+                        </p>
+                      </div>
+                    </button>
+
+                    {/* Vibration anti-temper simulated alert */}
+                    <button 
+                      onClick={() => {
+                        setMockNotification({
+                          title: "🚨 SEVERE ANTI-TEMPER VIBRATION",
+                          body: `High-frequency movement report on ${simulatedVehicle} received with ignition OFF. Potential towing or door tampering.`,
+                          type: 'danger'
+                        });
+                      }}
+                      className="flex items-start gap-4 p-5 rounded-2xl border border-slate-800 text-left transition-all hover:scale-[1.01] hover:shadow-lg bg-slate-950/80 hover:border-slate-750 cursor-pointer"
+                    >
+                      <div className="p-3 rounded-xl border flex-shrink-0 bg-slate-850 border-slate-800 text-slate-400">
+                        <AlertTriangle size={18} className="text-amber-500 animate-pulse" />
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[10px] uppercase font-black text-slate-500 tracking-wider">G-Sensor Shield</span>
+                        <div className="font-bold text-white text-sm">
+                          Simulate Alarm / Tow Alert
+                        </div>
+                        <p className="text-[11px] text-slate-400 leading-relaxed">
+                          Force-tests the high-sensitivity 3D accelerometer inside the tracking unit.
+                        </p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-800/80 pt-6 mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-xs text-center sm:text-left">
+                <div>
+                  🌐 Real-time synchronized using our lightweight tracking socket gateway.
+                </div>
+                <div className="flex gap-2">
+                  <span className="bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-850 text-[10px] uppercase font-bold tracking-widest text-slate-400 select-all">
+                    Gateway: PORT 3000
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Module: Sleek Dynamic iOS Smartphone App Simulation mockup */}
+            <div className="lg:col-span-5 flex items-center justify-center relative">
+              <div className="absolute inset-0 bg-gradient-to-tr from-brand-500/20 via-transparent to-emerald-500/10 rounded-[3rem] blur-3xl pointer-events-none" />
+              
+              {/* Smartphone Case Frame Wrapper */}
+              <div className="relative mx-auto w-full max-w-[340px] md:max-w-[360px] aspect-[9/18.5] bg-slate-900 rounded-[3.2rem] p-[9px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] border-4 border-slate-800/80 hover:border-slate-750 transition-colors">
+                
+                {/* Hardware Details: Side buttons mock */}
+                <div className="absolute -left-[5px] top-28 w-[3px] h-10 bg-slate-800 rounded-l" />
+                <div className="absolute -left-[5px] top-40 w-[3px] h-14 bg-slate-800 rounded-l" />
+                <div className="absolute -left-[5px] top-56 w-[3px] h-14 bg-slate-800 rounded-l" />
+                <div className="absolute -right-[5px] top-36 w-[3px] h-18 bg-slate-800 rounded-r" />
+
+                {/* Smartphone Operating Screen */}
+                <div className="w-full h-full bg-slate-950 rounded-[2.8rem] relative overflow-hidden text-slate-100 flex flex-col justify-between selection-none">
+                  
+                  {/* Subtle glass reflection overlay */}
+                  <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/5 to-transparent pointer-events-none z-30" />
+
+                  {/* Operational Status bar */}
+                  <div className="p-4 pt-6 pb-2 grid grid-cols-3 items-center relative z-40 bg-slate-950/20 text-white select-none">
+                    <div className="text-[11px] font-bold tracking-tight">08:42</div>
+                    <div className="justify-self-center flex items-center justify-center">
+                      {/* Interactive dynamic island pill notch */}
+                      <div className="w-24 h-4 bg-slate-900 rounded-full border border-slate-800 flex items-center justify-center text-[7px] text-slate-500 font-black uppercase tracking-wider">
+                        Alvary Air
+                      </div>
+                    </div>
+                    <div className="justify-self-end flex items-center gap-1 text-xs">
+                      <span className="text-[8px] font-black tracking-widest text-[#ccd1de]">LTE</span>
+                      <Wifi size={10} className="text-[#ccd1de]" />
+                      <div className="w-5 h-2.5 border border-white/20 rounded-xs p-0.5 flex items-center bg-white/5">
+                        <div className="h-full w-4/5 bg-emerald-500 rounded-2xs" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Dynamic Alert Dropdowns */}
+                  <AnimatePresence>
+                    {mockNotification && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -50, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -50, scale: 0.95 }}
+                        className="absolute top-[52px] left-3 right-3 z-50 overflow-hidden"
+                      >
+                        <div className={`p-4 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.6)] border flex gap-3 text-left ${
+                          mockNotification.type === 'danger' 
+                            ? 'bg-rose-950/95 border-rose-800/80 text-rose-100'
+                            : mockNotification.type === 'success'
+                            ? 'bg-emerald-950/95 border-emerald-800/80 text-emerald-100'
+                            : 'bg-slate-900/95 border-slate-700/80 text-slate-100'
+                        }`}>
+                          <div className={`p-1.5 rounded-lg flex-shrink-0 flex items-center justify-center ${
+                            mockNotification.type === 'danger'
+                              ? 'bg-rose-500/20 text-rose-400'
+                              : mockNotification.type === 'success'
+                              ? 'bg-emerald-500/20 text-emerald-400'
+                              : 'bg-brand-500/20 text-brand-400'
+                          }`}>
+                            <AlertTriangle size={14} className="animate-pulse" />
+                          </div>
+                          <div className="space-y-1 flex-1">
+                            <div className="text-[10px] font-black uppercase leading-tight tracking-wider text-white">
+                              {mockNotification.title}
+                            </div>
+                            <p className="text-[10px] leading-relaxed text-slate-200">
+                              {mockNotification.body}
+                            </p>
+                            <button 
+                              onClick={() => setMockNotification(null)}
+                              className="text-[9px] font-bold uppercase text-brand-400 tracking-widest hover:opacity-85 pt-1.5 block cursor-pointer"
+                            >
+                              Acknowledge Alert ×
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Onscreen live GPS map and logs view */}
+                  <div className="flex-1 relative bg-slate-950 flex flex-col overflow-hidden">
+                    
+                    {/* Simulated vector road grid map */}
+                    <div className="absolute inset-0 opacity-40">
+                      <div className="absolute inset-0 bg-[radial-gradient(#334155_1.5px,transparent_1.5px)] bg-[size:18px_18px]" />
+                      <div className="absolute top-24 left-1/3 w-32 h-32 rounded-full border border-slate-800/70" />
+                      <div className="absolute top-12 left-12 w-44 h-32 border-l border-b border-dashed border-slate-850" />
+                      <div className="absolute bottom-20 right-8 w-44 h-24 border-r border-t border-dashed border-slate-850" />
+                    </div>
+
+                    {/* Live Marker Pulse pin */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
+                      <div className="relative">
+                        <span className="absolute inline-flex h-12 w-12 rounded-full bg-brand-500/30 opacity-40 animate-ping -left-4 -top-4" />
+                        <div className="w-4.5 h-4.5 bg-brand-600 rounded-full border-2 border-white shadow-xl flex items-center justify-center relative z-10">
+                          <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                        </div>
+                      </div>
+                      <span className="bg-slate-900/90 border border-slate-800 text-[9px] font-bold px-2 py-0.5 rounded-md text-slate-300 mt-2 tracking-wide font-mono shadow-md backdrop-blur-xs select-none">
+                        {syncPlate}
+                      </span>
+                    </div>
+
+                    {/* Companion Title Header */}
+                    <div className="p-3.5 relative z-10 flex justify-between items-center bg-gradient-to-b from-slate-950 to-transparent select-none">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-4 h-4 rounded-md bg-brand-600 flex items-center justify-center text-[7px] text-white font-black">A</div>
+                        <span className="text-[9px] font-black tracking-widest text-[#4f46e5] uppercase">ALVARY MOBILE</span>
+                      </div>
+                      <div className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[8px] font-black px-2 py-0.5 rounded-full tracking-wider uppercase">
+                        ONLINE
+                      </div>
+                    </div>
+
+                    {/* Synced App Widget panel */}
+                    <div className="mt-auto p-3 relative z-10">
+                      <div className="bg-slate-900/95 backdrop-blur-md rounded-2xl p-4.5 border border-slate-800 shadow-2xl relative">
+                        <div className="flex justify-between items-start mb-3.5 gap-2">
+                          <div className="truncate">
+                            <span className="text-[8px] font-bold uppercase text-brand-400 tracking-wider">SECURE TRANSMISSION</span>
+                            <h4 className="text-sm font-extrabold text-white leading-tight truncate">{simulatedVehicle}</h4>
+                            <span className="font-mono text-xs font-bold text-slate-400">{syncPlate}</span>
+                          </div>
+                          <div className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider shrink-0 flex items-center gap-1 border ${
+                            isEngineOn 
+                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+                              : 'bg-slate-800 text-slate-500 border-slate-700'
+                          }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${isEngineOn ? 'bg-emerald-500' : 'bg-slate-600'}`} />
+                            {isEngineOn ? "ACC ON" : "ACC OFF"}
+                          </div>
+                        </div>
+
+                        {/* Telemetry diagnostics */}
+                        <div className="grid grid-cols-2 gap-2 mb-3.5 border-t border-slate-800 pt-3 select-none">
+                          <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850">
+                            <span className="text-[8px] text-slate-400 font-extrabold uppercase tracking-wide block">Speedometer</span>
+                            <span className="text-sm font-black text-white font-mono tracking-wide">{simulatedSpeed}</span>
+                            <span className="text-[9px] text-slate-500 font-bold"> km/h</span>
+                          </div>
+                          <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850">
+                            <span className="text-[8px] text-slate-400 font-extrabold uppercase tracking-wide block">G-Sensor Shield</span>
+                            <span className={`text-xs font-black block truncate ${simulatedSpeed > 100 ? 'text-rose-400 animate-pulse font-extrabold' : 'text-slate-200'}`}>
+                              {simulatedSpeed > 100 ? '⚠️ High (0.8g)' : '🟢 Safe (1.0g)'}
+                            </span>
+                            <span className="text-[7px] text-slate-500 block truncate leading-none mt-0.5">3D accelerometry</span>
+                          </div>
+                        </div>
+
+                        {/* Relay state readout */}
+                        <div className={`p-3 rounded-xl border flex items-center justify-between text-xs transition-colors ${
+                          isFuelRelayLocked 
+                            ? 'bg-rose-950/20 border-rose-900/40 text-rose-300' 
+                            : 'bg-emerald-500/5 border-emerald-500/10 text-emerald-300'
+                        }`}>
+                          <div className="flex items-center gap-2">
+                            {isFuelRelayLocked ? <Lock size={12} className="text-rose-400 animate-pulse" /> : <Unlock size={12} className="text-emerald-400" />}
+                            <span className="font-extrabold uppercase text-[9px] tracking-wider truncate">
+                              Immobilizer: {isFuelRelayLocked ? "LOCK ENGAGED" : "UNLOCKED"}
+                            </span>
+                          </div>
+                          <span className={`text-[9px] font-black uppercase ${
+                            isFuelRelayLocked ? 'text-rose-400' : 'text-emerald-400'
+                          }`}>
+                            {isFuelRelayLocked ? "SOLENOID ON" : "READY"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Simulated App footer */}
+                  <div className="p-3 bg-slate-950 border-t border-slate-900/50 flex items-center justify-between gap-1 text-[8px] text-slate-500 font-mono select-none">
+                    <span>📱 Client Core v2.8</span>
+                    <span>🇿🇼 Alvary Telematics Corp</span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Dedicated Download Badge Panel */}
+          <div className="bg-slate-900/60 rounded-[2.5rem] border border-slate-800 p-8 md:p-12 mt-16 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-32 h-32 bg-brand-500/5 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="space-y-4 max-w-xl text-center md:text-left">
+              <h3 className="text-2xl font-black text-white">Get the Alvary Companion Mobile App</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Connect your physical trackers with the mobile app today. Supports customizable overspeeding threshold alerts, historical reports playbacks, silent anti-theft geofencing, and remote starter motor immobilization directly using your fingers.
+              </p>
+              <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-2">
+                {/* Google Play Store Badge Vector Link */}
+                <a 
+                  href="https://play.google.com" 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="bg-slate-950 hover:bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-all text-white px-5 py-2.5 rounded-xl flex items-center gap-3 w-44"
+                >
+                  <svg className="w-5 h-5 text-white/90" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3,5.277L14.785,12L3,18.723V5.277 M15.75,12.551L19.43,10.428C19.782,10.223 20,9.851 20,9.45C20,9.851 19.782,8.677 19.43,8.472L3.71,0.134C3.25,-0.082 2.71,-0.016 2.302,0.301L14.785,12L15.75,12.551M2.302,23.699C2.71,24.016 3.25,24.082 3.71,23.866L19.43,15.528C19.782,15.322 20,14.951 20,14.55C20,14.149 19.782,13.777 19.43,13.571L15.75,11.448L12.44,14.758L2.302,23.699Z" />
+                  </svg>
+                  <div className="flex flex-col text-left">
+                    <span className="text-[9px] text-slate-500 uppercase font-black leading-none tracking-widest">GET IT ON</span>
+                    <span className="text-xs font-black text-slate-100 mt-0.5 leading-none">Google Play</span>
+                  </div>
+                </a>
+
+                {/* App Store Badge Vector Link */}
+                <a 
+                  href="https://apple.com/app-store" 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="bg-slate-950 hover:bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-all text-white px-5 py-2.5 rounded-xl flex items-center gap-3 w-44"
+                >
+                  <svg className="w-5 h-5 text-white/90" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.71,19.5 C17.88,20.74 17,21.95 15.66,21.97 C14.32,22 13.89,21.18 12.37,21.18 C10.84,21.18 10.37,21.95 9.1,22 C7.79,22.05 6.8,20.68 5.96,19.48 C4.25,17 2.94,12.45 4.7,9.39 C5.57,7.87 7.13,6.91 8.82,6.88 C10.1,6.86 11.32,7.75 12.11,7.75 C12.89,7.75 14.37,6.68 15.92,6.84 C16.57,6.87 18.39,7.1 19.56,8.82 C19.47,8.88 17.39,10.1 17.41,12.63 C17.44,15.65 20.06,16.66 20.1,16.67 C20.08,16.74 19.67,18.11 18.71,19.5 M15.97,4.17 C16.63,3.37 17.07,2.28 16.95,1 C16,1.04 14.9,1.6 14.24,2.38 C13.68,3.02 13.19,4.14 13.34,5.4 C14.39,5.48 15.42,4.88 15.97,4.17 Z" />
+                  </svg>
+                  <div className="flex flex-col text-left">
+                    <span className="text-[9px] text-slate-500 uppercase font-black leading-none tracking-widest">Download on the</span>
+                    <span className="text-xs font-black text-slate-100 mt-0.5 leading-none">App Store</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div className="h-px w-full md:h-16 md:w-px bg-slate-800 flex-shrink-0" />
+
+            <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left flex-shrink-0">
+              {/* Scan Badge visual QR code */}
+              <div className="bg-white p-3 rounded-2xl flex-shrink-0 border border-slate-700 shadow-lg">
+                <div className="w-16 h-16 relative flex flex-wrap p-0.5 bg-white select-none">
+                  <div className="absolute top-0.5 left-0.5 w-4.5 h-4.5 border-3 border-slate-900 flex items-center justify-center">
+                    <div className="w-1 h-1 bg-slate-900" />
+                  </div>
+                  <div className="absolute top-0.5 right-0.5 w-4.5 h-4.5 border-3 border-slate-900 flex items-center justify-center">
+                    <div className="w-1 h-1 bg-slate-900" />
+                  </div>
+                  <div className="absolute bottom-0.5 left-0.5 w-4.5 h-4.5 border-3 border-slate-900 flex items-center justify-center">
+                    <div className="w-1 h-1 bg-slate-900" />
+                  </div>
+                  <div className="w-full h-full flex flex-wrap opacity-75 pt-1M ml-1.5 gap-0.5 mt-1.5">
+                    <span className="bg-slate-900 w-1.5 h-1.5 rounded-2xs" />
+                    <span className="bg-slate-900 w-1 h-1 rounded-2xs" />
+                    <span className="bg-slate-950 w-2 h-1" />
+                    <span className="bg-slate-900 w-1.5 h-1.5" />
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[10px] uppercase font-black bg-slate-950 border border-slate-850 px-2 py-0.5 rounded text-brand-400 inline-block tracking-widest leading-none">
+                  Pair Instantly
+                </span>
+                <h4 className="font-bold text-white text-sm">Scan to Setup Sync</h4>
+                <p className="text-slate-400 text-xs leading-relaxed max-w-[210px]">
+                  Scan to auto-pair with secure smartphone repositories immediately.
+                </p>
               </div>
             </div>
           </div>
@@ -795,10 +1724,10 @@ export default function App() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { img: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800", label: "Highway Patrol", type: "On the Road" },
+              { img: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800", video: "https://assets.mixkit.co/videos/preview/mixkit-car-driving-on-a-highway-at-sunset-41484-large.mp4", label: "Highway Patrol", type: "On the Road" },
               { img: "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&q=80&w=800", label: "Modern Garage", type: "Installation Bay" },
-              { img: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&q=80&w=800", label: "Long Haul Fleet", type: "Fleet Management" },
-              { img: ShowcaseImg4, label: "Precision Service", type: "Maintenance" }
+              { img: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&q=80&w=800", video: "https://assets.mixkit.co/videos/preview/mixkit-cargo-truck-driving-on-highway-41452-large.mp4", label: "Long Haul Fleet", type: "Fleet Management" },
+              { img: ShowcaseImg4, video: "https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-cars-on-a-highway-41487-large.mp4", label: "Precision Service", type: "Maintenance" }
             ].map((item, i) => (
               <motion.div 
                 key={i}
@@ -808,12 +1737,24 @@ export default function App() {
                 viewport={{ once: true }}
                 className="group relative rounded-[2rem] overflow-hidden aspect-[4/5]"
               >
-                <img 
-                  src={item.img} 
-                  alt={item.label} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  referrerPolicy="no-referrer"
-                />
+                {item.video ? (
+                  <video 
+                    src={item.video} 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline 
+                    poster={item.img} 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                ) : (
+                  <img 
+                    src={item.img} 
+                    alt={item.label} 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    referrerPolicy="no-referrer"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-950/80 via-transparent to-transparent opacity-60 group-hover:opacity-90 transition-opacity" />
                 <div className="absolute bottom-0 left-0 p-8 text-white">
                   <p className="text-xs font-bold uppercase tracking-widest text-brand-400 mb-2">{item.type}</p>
