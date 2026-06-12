@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Shield, 
   MapPin, 
@@ -25,7 +25,16 @@ import {
   CreditCard,
   Target,
   Zap,
-  ChevronDown
+  ChevronDown,
+  HelpCircle,
+  Cpu,
+  RefreshCw,
+  AlertTriangle,
+  Radio,
+  Copy,
+  Check,
+  Info,
+  ArrowLeft
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ShowcaseImg4 from './assets/images/regenerated_image_1778503906343.jpg';
@@ -93,11 +102,126 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
   );
 };
 
+const comparisonFeatures = [
+  { name: "Real-Time Monitoring", starter: true, elite: true, desc: "Instant high-precision location updates via web & mobile portals" },
+  { name: "Route Playback", starter: true, elite: true, desc: "Review 3-month detailed historical replay of traveling routes" },
+  { name: "Geofencing Boundaries", starter: true, elite: true, desc: "Establish virtual borders with automated entry and exit alerts" },
+  { name: "Overspeeding Alerts", starter: true, elite: true, desc: "Immediate driver speed limit violation mobile/SMS notifications" },
+  { name: "Ignition Detection", starter: true, elite: true, desc: "Continuous live engine status monitoring (On, Idle, Off)" },
+  { name: "SOS Panic Button", starter: false, elite: true, desc: "Dedicated physical dashboard console button for safety emergencies" },
+  { name: "Voice Cabin Monitoring", starter: false, elite: true, desc: "Equipped with a high-gain live audio listening microphone" },
+  { name: "Remote Engine Cutoff Relay", starter: false, elite: true, desc: "Instantly halt the engine/fuel pump securely from the remote app and system limits" },
+  { name: "FREE SIM Card", starter: true, elite: true, desc: "Pre-provisioned local GSM SIM card included in the telemetry package" },
+  { name: "2 Months Complimentary Data", starter: true, elite: true, desc: "Fully funded active network cellular data plan for the first 60 days" },
+  { name: "Onboard Backup Battery Protection", starter: true, elite: true, desc: "Internal lithium cell security backup continues tracking if the vehicle battery is cut" }
+];
+
+interface HelpTopic {
+  id: string;
+  title: string;
+  shortDesc: string;
+  category: string;
+  iconName: 'device-reset' | 'troubleshoot-gps' | 'engine-cutoff' | 'sync-issue';
+  steps: { text: string; details?: string }[];
+  commandToCopy?: string;
+  recommendation?: string;
+}
+
+const HELP_TOPICS: HelpTopic[] = [
+  {
+    id: "device-reset",
+    title: "Device Reset Instructions",
+    shortDesc: "Reboot your Alvary GPS tracker to clear temporary connectivity errors.",
+    category: "Hardware",
+    iconName: "device-reset",
+    commandToCopy: "RESET#",
+    recommendation: "Perform a backup battery cycle only if the soft reset command fails to respond.",
+    steps: [
+      { text: "Option A: SMS Soft Reset Command", details: "If the SIM card inside your tracker is active, you can reboot the device remotely. Copy the SMS command 'RESET#' below, send it to your vehicle's tracker phone number from your registered master phone number, and wait 60 seconds." },
+      { text: "Option B: Physical Hard Reset", details: "Locate the GPS tracker device (typically installed securely behind the glovebox or under the steering console). Locate the tiny pinhole on the side. Insert a thin paperclip/SIM ejector tool and hold it down for 10 seconds until the red and green LEDs flash in unison." },
+      { text: "Confirming Device Status After Reboot", details: "Within 2-3 minutes of resetting, both Cellular (green) and GPS (blue/orange) light indicators should start flashing slowly, signaling a stable system reconnect." }
+    ]
+  },
+  {
+    id: "troubleshoot-gps",
+    title: "Troubleshooting Bad GPS Signals",
+    shortDesc: "Fix inaccurate location readings or offline/stale vehicle positions.",
+    category: "Telemetry",
+    iconName: "troubleshoot-gps",
+    commandToCopy: "WHERE#",
+    recommendation: "Always ensure the vehicle has an unobstructed, direct line of sight to the outdoor sky.",
+    steps: [
+      { text: "Check Physical Vehicle Environment", details: "GPS signals require line-of-sight satellite reception. If your vehicle is inside an underground parking garage, under a dense concrete canopy, or deep in heavy steel-constructed warehouses, GPS tracking may pause or fall back to Cell-Tower triangulation." },
+      { text: "Query Current GPS Coordinates Directly", details: "You can force-query the locator module to respond with its raw parameters. Copy the SMS command 'WHERE#' below and send it to your tracker's phone number. The device will reply back with its raw latitude and longitude coordinates in a Google Maps link if it has a signal." },
+      { text: "Verify Ignition Power & 'Sleep Mode' Active", details: "Our trackers auto-enter a battery-saver Sleep Mode 10 minutes after the engine is turned off. Start the car and drive a short distance (more than 20 meters) to trigger the high-precision G-sensor accelerometer and force real-time updates." }
+    ]
+  },
+  {
+    id: "engine-cutoff",
+    title: "Immobilizer & Engine Cut-Off Help",
+    shortDesc: "Steps to safely diagnose and verify the remote engine shutdown relay.",
+    category: "Security",
+    iconName: "engine-cutoff",
+    commandToCopy: "STOPENGINE#1234",
+    recommendation: "For active driver safety, Alvary restricts remote engine halts when traveling above 15 km/h.",
+    steps: [
+      { text: "Understand the Speed Safety Guard", details: "To prevent sudden highway lockups and serious road accidents, the smart control system holds the engine shutdown signal in queue if the tracker detects active motion speed above 15 km/h. The relay will securely lock the fuel pump the moment the car slows down or comes to an idle stop." },
+      { text: "Validate Security PIN Validation", details: "Copy and customize the template command below: 'STOPENGINE#[Your4DigitPIN]'. Re-send it via the app control panel or encrypted SMS gateway using your authorized master phone number registered with Alvary." },
+      { text: "Physical Relay Inspection & Bypass", details: "If the engine completely fails to crank even after sending a start command ('STARTENGINE#'), check the wiring harness fuse under the steering column to guarantee the heavy-duty automotive relay has not blown or shaken loose on rugged gravel roads." }
+    ]
+  },
+  {
+    id: "sync-issue",
+    title: "Portal & Mobile App Synchronization",
+    shortDesc: "Fix issues where vehicle metrics or offline status are delayed in the app.",
+    category: "Software",
+    iconName: "sync-issue",
+    commandToCopy: "STATUS#",
+    recommendation: "Ensure your annual or monthly telemetry subscription rate has been fully credited for active SIM cellular service.",
+    steps: [
+      { text: "Force-Refresh Dashboard App State", details: "Slide down from the top on the Alvary Fleet Mobile dashboard to perform a hard data re-fetch, or clear the mobile web portal's storage cookies and log back in to renew your secure API session token." },
+      { text: "Diagnose Device SIM Signal Status", details: "Copy and send the 'STATUS#' diagnostic query command via SMS to check cellular latency, signal decibels, and connection packet success. If the return SMS states 'GPRS: Link Down', the onboard network plan requires top-up or the local Econet/NetOne cellular tower is experiencing temporary outage." },
+      { text: "Subscription & Account Lock Checks", details: "Confirm that your account tracking subscription is fully active. Accounts that are overdue past the 14-day formal grace period are automatically queued for network suspension, resulting in continuous offline status in the tracking logs." }
+    ]
+  }
+];
+
 export default function App() {
   const [activeSection, setActiveSection] = useState<SectionId>('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showCookieConsent, setShowCookieConsent] = useState(false);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [showTermsOfService, setShowTermsOfService] = useState(false);
+
+  // Quick Help state variables
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [selectedTopicId, setSelectedTopicId] = useState('device-reset');
+  const [mobileView, setMobileView] = useState<'list' | 'detail'>('list');
+  const [copiedText, setCopiedText] = useState<string | null>(null);
+
+  const handleCopyCommand = (command: string) => {
+    navigator.clipboard.writeText(command);
+    setCopiedText(command);
+    setTimeout(() => {
+      setCopiedText(null);
+    }, 2000);
+  };
+
+  const getTopicIcon = (iconName: string, className = "w-5 h-5") => {
+    switch (iconName) {
+      case 'device-reset':
+        return <RefreshCw className={className} />;
+      case 'troubleshoot-gps':
+        return <Radio className={className} />;
+      case 'engine-cutoff':
+        return <Zap className={className} />;
+      case 'sync-issue':
+        return <Smartphone className={className} />;
+      default:
+        return <HelpCircle className={className} />;
+    }
+  };
 
   useEffect(() => {
     const consent = localStorage.getItem('cookie-consent');
@@ -373,6 +497,111 @@ export default function App() {
               >
                 Learn More <ArrowRight size={18} />
               </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Technical Specifications & Feature Comparison Section */}
+      <section className="py-24 bg-white border-t border-b border-slate-100">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-brand-600 font-bold uppercase tracking-widest text-sm mb-4">Compare Features</h2>
+            <h3 className="text-4xl font-bold text-slate-900 mb-6 font-sans">Side-by-Side Package Comparison</h3>
+            <p className="text-slate-600 text-lg">
+              Compare the features of our Starter and Elite tracking packages to find the perfect solution for your vehicle or logistics fleet.
+            </p>
+          </div>
+
+          <div className="overflow-x-auto rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-100/50">
+            <table className="w-full text-left border-collapse min-w-[760px]">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200">
+                  <th className="py-6 px-6 font-bold text-slate-900 border-r border-slate-100 w-2/5">
+                    <span className="text-sm uppercase tracking-wider text-slate-500 font-bold">Package Features</span>
+                  </th>
+                  <th className="py-6 px-6 border-r border-slate-100 w-[30%] text-center">
+                    <div className="flex flex-col items-center">
+                      <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">Standard Option</span>
+                      <span className="text-xl font-extrabold text-slate-900">Starter Plan</span>
+                      <span className="text-xs text-slate-500 font-normal mt-1">Excellent Vehicle Security</span>
+                    </div>
+                  </th>
+                  <th className="py-6 px-6 bg-brand-50/40 relative w-[30%] text-center">
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-brand-600 text-white text-[10px] uppercase font-black px-4 py-1 rounded-full shadow-md shadow-brand-600/20 tracking-wider">
+                      RECOMMENDED
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span className="text-[10px] uppercase font-bold tracking-widest text-brand-600 mb-1">Advanced Control</span>
+                      <span className="text-xl font-extrabold text-brand-900">Elite Plan</span>
+                      <span className="text-xs text-brand-700/80 font-normal mt-1">Ultimate Security & Immobilizer</span>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonFeatures.map((feature, index) => (
+                  <tr 
+                    key={index} 
+                    className={`border-b border-slate-100 hover:bg-slate-50/50 transition-colors ${
+                      index % 2 === 0 ? 'bg-white' : 'bg-slate-50/10'
+                    }`}
+                  >
+                    <td className="py-5 px-6 border-r border-slate-100">
+                      <div className="font-bold text-sm text-slate-900">{feature.name}</div>
+                      <div className="text-xs text-slate-400 mt-1 leading-relaxed font-normal">{feature.desc}</div>
+                    </td>
+                    <td className="py-5 px-6 border-r border-slate-100 text-center">
+                      <div className="flex justify-center items-center">
+                        {feature.starter ? (
+                          <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-sm">
+                            <Check className="w-4 h-4 stroke-[3]" />
+                          </div>
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-rose-50 text-rose-500/80 flex items-center justify-center border border-rose-100/50">
+                            <X className="w-4 h-4 stroke-[3]" />
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-5 px-6 bg-brand-50/10 text-center">
+                      <div className="flex justify-center items-center">
+                        {feature.elite ? (
+                          <div className="w-9 h-9 rounded-full bg-brand-600 text-white flex items-center justify-center shadow-md shadow-brand-600/20">
+                            <Check className="w-5 h-5 stroke-[3]" />
+                          </div>
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-rose-50 text-rose-500/80 flex items-center justify-center border border-rose-100/50">
+                            <X className="w-4 h-4 stroke-[3]" />
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
+          <div className="mt-12 text-center">
+            <p className="text-sm text-slate-500 mb-6">
+              Need assistance selecting the right package? Our expert sales agents in Harare are here to help.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+              <button 
+                onClick={() => scrollToSection('contact')}
+                className="bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-3.5 rounded-xl transition-all shadow-xl shadow-brand-600/15 flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
+              >
+                Get a Free Quote <ArrowRight size={18} />
+              </button>
+              <a 
+                href="https://wa.me/263781899027" 
+                target="_blank"
+                rel="noreferrer"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3.5 rounded-xl transition-all shadow-xl shadow-emerald-600/15 flex items-center gap-2 w-full sm:w-auto justify-center"
+              >
+                <MessageCircle size={18} /> Chat on WhatsApp
+              </a>
             </div>
           </div>
         </div>
@@ -868,8 +1097,8 @@ export default function App() {
           <div className="pt-12 border-t border-white/5 flex flex-col md:row items-center justify-between gap-6 text-sm text-slate-500">
             <p>© {new Date().getFullYear()} Alvary Technologies. All rights reserved.</p>
             <div className="flex gap-8">
-              <button className="hover:text-white transition-colors">Privacy Policy</button>
-              <button className="hover:text-white transition-colors">Terms of Service</button>
+              <button onClick={() => setShowPrivacyPolicy(true)} className="hover:text-white transition-colors cursor-pointer font-medium">Privacy Policy</button>
+              <button onClick={() => setShowTermsOfService(true)} className="hover:text-white transition-colors cursor-pointer font-medium">Terms of Service</button>
             </div>
           </div>
         </div>
@@ -922,6 +1151,383 @@ export default function App() {
               </div>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Privacy Policy Modal */}
+      <AnimatePresence>
+        {showPrivacyPolicy && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowPrivacyPolicy(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl border border-slate-100 relative z-10 overflow-hidden"
+            >
+              <div className="p-8 border-b border-slate-100 flex justify-between items-start">
+                <div>
+                  <div className="flex items-center gap-2 text-brand-600 mb-1">
+                    <Shield size={20} />
+                    <span className="text-xs font-bold uppercase tracking-widest">Privacy Compliance</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900">Privacy Policy</h3>
+                </div>
+                <button 
+                  onClick={() => setShowPrivacyPolicy(false)}
+                  className="p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="overflow-y-auto p-8 border-b border-slate-100 text-slate-600 space-y-6 text-sm leading-relaxed custom-scrollbar max-h-[50vh]">
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">1. Introduction</h4>
+                  <p>Welcome to Alvary Technologies. We respect your privacy and are committed to protecting your personal, vehicle, and real-time location data. This Privacy Policy describes how we collect, process, secure, and share your information when you use our vehicle tracking hardware, mobile apps, and fleet portals.</p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">2. Information We Collect</h4>
+                  <p>To provide high-quality GPS tracking and security, we collect the following types of information:</p>
+                  <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li><strong>Account registration info:</strong> Representative name, company details, phone number, email address, physical location.</li>
+                    <li><strong>Vehicle information:</strong> Fleet size, vehicle brand, registration numbers, engine capacity, fuel capacity.</li>
+                    <li><strong>Real-time Telemetry Data:</strong> Constant coordinate positioning (latitude, longitude, altitude), speed logs, distance tracked, engine diagnostics (OBD-II), fuel sensor metrics, driving patterns, acceleration spikes, and geofence entries/exits.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">3. How We Use and Process Data</h4>
+                  <p>Your telemetry and account data are processed directly to:</p>
+                  <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Provide 24/7 web and mobile app interfaces to view vehicle statuses.</li>
+                    <li>Power anti-theft engines, geofence alarm systems, and auto-alerts.</li>
+                    <li>Execute recovery telemetry in the event of an emergency or hijacking incident.</li>
+                    <li>Calculate vehicle mileage and design analytical fuel usage optimization charts.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">4. Third-Party Sharing & Disclosure</h4>
+                  <p>Alvary Technologies does not sell, rent, or trade your personal or telemetry data to third parties. Under strict conditions, we may share information with:</p>
+                  <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Certified vehicle recovery agents, dispatchers, or the Republic of Zimbabwe Police Service during emergency tracking requests initiated directly by you.</li>
+                    <li>Regulatory bodies or legal authorities if legally required to do so under Zimbabwean cybersecurity legislation.</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">5. Data Retention & Safeguards</h4>
+                  <p>We leverage advanced high-integrity database encryption protocols to safeguard location coordinates from unauthorized interception. Raw tracking logs are retained securely on our clouds for up to 12 months for review, unless you explicitly request early archiving or deletion.</p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">6. Contact and Updates</h4>
+                  <p>We may update this policy periodically to align with localized regulations and our technological innovations. For key privacy inquiries, system access controls, or coordinate removal requests, email us at <a href="mailto:sales@alvarytechnologies.co.zw" className="text-brand-600 font-medium hover:underline">sales@alvarytechnologies.co.zw</a>.</p>
+                </div>
+              </div>
+
+              <div className="p-6 bg-slate-50 flex justify-end">
+                <button 
+                  onClick={() => setShowPrivacyPolicy(false)}
+                  className="bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-3 rounded-xl transition-all shadow-xl shadow-brand-600/15 cursor-pointer animate-none"
+                >
+                  I Understand
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Terms of Service Modal */}
+      <AnimatePresence>
+        {showTermsOfService && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowTermsOfService(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl border border-slate-100 relative z-10 overflow-hidden"
+            >
+              <div className="p-8 border-b border-slate-100 flex justify-between items-start">
+                <div>
+                  <div className="flex items-center gap-2 text-brand-600 mb-1">
+                    <Shield size={20} />
+                    <span className="text-xs font-bold uppercase tracking-widest">Binding Agreement</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900">Terms of Service</h3>
+                </div>
+                <button 
+                  onClick={() => setShowTermsOfService(false)}
+                  className="p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="overflow-y-auto p-8 border-b border-slate-100 text-slate-600 space-y-6 text-sm leading-relaxed custom-scrollbar max-h-[50vh]">
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">1. Acceptance of Terms</h4>
+                  <p>By purchasing Alvary Technologies hardware trackers, scheduling physical technician installations, or accessing our live digital maps, you confirm that you agree to be bound by these Terms of Service. If you disagree, do not use our services.</p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">2. Scope of Service</h4>
+                  <p>Alvary Technologies provisions remote fleet monitoring diagnostics, geofencing intelligence, hardwired satellite position hardware, and localized recovery aids. Service accessibility is contingent on continuous network uptime and system integrations.</p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">3. Legal Authorization to Track</h4>
+                  <p>You warrant that you possess full, legal authorization and relevant consent to install trackers on, and monitor the positioning of, any fleet assets or personal vehicles added to your account portfolio. Secretly tracking vehicles belonging to third-parties without their prior direct consent stands as a direct breach of system rules and localized laws, in which you hold sole responsibility.</p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">4. Subscriptions, Payments & Sim-Cards</h4>
+                  <p>Remote tracking requires active Cellular SIM operations and cloud platform hosting. Accounts are charged depending on chosen tiers. Neglecting due subscription invoices beyond 14 grace days will lead to automated SIM service interruptions and asset offline statuses. Reactivation charges may apply.</p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">5. Hardware Integrity & 12-Month Guarantee</h4>
+                  <p>Our hardwired GPS trackers carry a comprehensive 12-month manufacturing warranty from the installation date. This warranty is rendered void if the device shell is physically dismantled, disconnected, or tampered with by an uncertified technician.</p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">6. Limitation of Liability</h4>
+                  <p>GPS tracking systems depend on global satellite reception, correct electrical connection, and localized GSM connectivity. Services are offered "as is". Alvary Technologies is not strictly liable for physical asset loss, recovery gaps, or business down-times caused by regional network dead-zones or equipment sabotage.</p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-base mb-2">7. Regulatory Framework</h4>
+                  <p>These terms and conditions are strictly regulated under the jurisdiction laws of the Republic of Zimbabwe. Legal inquiries should be raised via sales channel correspondence.</p>
+                </div>
+              </div>
+
+              <div className="p-6 bg-slate-50 flex justify-end">
+                <button 
+                  onClick={() => setShowTermsOfService(false)}
+                  className="bg-brand-600 hover:bg-brand-700 text-white font-bold px-8 py-3 rounded-xl transition-all shadow-xl shadow-brand-600/15 cursor-pointer animate-none"
+                >
+                  I Agree
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Help Button */}
+      <button
+        onClick={() => {
+          setShowHelpModal(true);
+          setMobileView('list');
+        }}
+        className="fixed bottom-[96px] right-6 z-50 flex items-center justify-center w-[60px] h-[60px] bg-brand-600 hover:bg-brand-700 text-white rounded-full shadow-2xl transition-transform hover:scale-110 cursor-pointer group border border-brand-500/20"
+        title="Quick Help & Troubleshooting"
+      >
+        <HelpCircle size={28} className="text-white group-hover:rotate-12 transition-transform" />
+      </button>
+
+      {/* Help Modal */}
+      <AnimatePresence>
+        {showHelpModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-hidden">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowHelpModal(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl border border-slate-100 relative z-10 overflow-hidden"
+            >
+              {/* Modal Header */}
+              <div className="p-6 md:p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
+                <div>
+                  <div className="flex items-center gap-2 text-brand-600 mb-1">
+                    <HelpCircle size={20} />
+                    <span className="text-xs font-bold uppercase tracking-widest">Self-Service Troubleshooter</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900">Alvary Support Center</h3>
+                </div>
+                <button 
+                  onClick={() => setShowHelpModal(false)}
+                  className="p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Modal Core Content */}
+              <div className="flex-1 overflow-hidden flex flex-col md:flex-row min-h-[400px]">
+                
+                {/* Desktop Sidebar / Mobile List view */}
+                <div className={`w-full md:w-1/3 border-r border-slate-100 bg-slate-50/30 overflow-y-auto p-4 md:p-6 select-none ${
+                  mobileView === 'detail' ? 'hidden md:block' : 'block'
+                }`}>
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 mb-3">Diagnostic Topics</h4>
+                  <div className="space-y-2">
+                    {HELP_TOPICS.map((topic) => {
+                      const isActive = selectedTopicId === topic.id;
+                      return (
+                        <button
+                          key={topic.id}
+                          onClick={() => {
+                            setSelectedTopicId(topic.id);
+                            setMobileView('detail');
+                          }}
+                          className={`w-full text-left p-3.5 rounded-2xl flex items-start gap-3 transition-all cursor-pointer ${
+                            isActive 
+                              ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/15 font-semibold' 
+                              : 'hover:bg-slate-100 text-slate-700'
+                          }`}
+                        >
+                          <div className={`p-2 rounded-xl flex-shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-brand-50 text-brand-600'}`}>
+                            {getTopicIcon(topic.iconName, "w-5 h-5")}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-bold leading-tight truncate">{topic.title}</div>
+                            <div className={`text-[11px] mt-0.5 line-clamp-1 ${isActive ? 'text-brand-100' : 'text-slate-400'}`}>
+                              {topic.shortDesc}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Desktop Detail / Mobile Detail view */}
+                <div className={`flex-1 overflow-y-auto p-6 md:p-8 flex flex-col ${
+                  mobileView === 'list' ? 'hidden md:flex' : 'flex'
+                }`}>
+                  {/* Mobile Back Button */}
+                  <div className="md:hidden mb-6">
+                    <button 
+                      onClick={() => setMobileView('list')}
+                      className="flex items-center gap-2 text-brand-600 font-bold text-sm tracking-wide cursor-pointer"
+                    >
+                      <ArrowLeft size={16} /> Back to Topics
+                    </button>
+                  </div>
+
+                  {(() => {
+                    const currentTopic = HELP_TOPICS.find(t => t.id === selectedTopicId);
+                    if (!currentTopic) return null;
+                    return (
+                      <div className="space-y-6 flex-1">
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-[10px] uppercase font-black bg-brand-50 text-brand-700 px-2.5 py-1 rounded-md tracking-wider">
+                              {currentTopic.category}
+                            </span>
+                          </div>
+                          <h4 className="text-xl font-bold text-slate-900">{currentTopic.title}</h4>
+                          <p className="text-sm text-slate-500 mt-2">{currentTopic.shortDesc}</p>
+                        </div>
+
+                        {/* Steps List */}
+                        <div className="space-y-4">
+                          <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Step-by-Step Instructions</h5>
+                          <div className="space-y-3">
+                            {currentTopic.steps.map((step, idx) => (
+                              <div key={idx} className="flex gap-4 items-start p-4 hover:bg-slate-50/50 rounded-2xl transition-all border border-slate-100">
+                                <div className="w-7 h-7 rounded-full bg-brand-50 text-brand-600 font-black text-xs flex items-center justify-center flex-shrink-0 border border-brand-100">
+                                  {idx + 1}
+                                </div>
+                                <div className="space-y-1 flex-1">
+                                  <div className="text-sm font-bold text-slate-900 leading-tight">{step.text}</div>
+                                  {step.details && (
+                                    <p className="text-xs text-slate-500 leading-relaxed">{step.details}</p>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Interactive Copyable command */}
+                        {currentTopic.commandToCopy && (
+                          <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200/60">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 flex items-center gap-1.5">
+                                <Info size={12} className="text-slate-400" /> WhatsApp / SMS Command
+                              </span>
+                              <span className="text-[10px] text-slate-400 italic">Send directly to your device SIM</span>
+                            </div>
+                            <div className="bg-slate-900 text-slate-100 p-3.5 rounded-xl font-mono text-sm flex justify-between items-center overflow-x-auto shadow-inner border border-slate-800">
+                              <span className="select-all tracking-wider font-semibold">{currentTopic.commandToCopy}</span>
+                              <button
+                                onClick={() => handleCopyCommand(currentTopic.commandToCopy!)}
+                                className={`ml-4 p-2 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
+                                  copiedText === currentTopic.commandToCopy
+                                    ? 'bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30'
+                                    : 'bg-white/10 hover:bg-white/15 text-slate-300 hover:text-white border border-white/5'
+                                }`}
+                              >
+                                {copiedText === currentTopic.commandToCopy ? (
+                                  <>
+                                    <Check size={14} />
+                                    <span className="text-xs font-semibold">Copied</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy size={14} />
+                                    <span className="text-xs font-semibold">Copy</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Recommendation alert box */}
+                        {currentTopic.recommendation && (
+                          <div className="bg-amber-50/40 rounded-2xl p-4 border border-amber-100 flex gap-3 text-amber-900 text-xs">
+                            <AlertTriangle size={18} className="text-amber-600 flex-shrink-0 mt-0.5 animate-pulse" />
+                            <div>
+                              <span className="font-extrabold block text-amber-800 mb-0.5 uppercase tracking-wide text-[10px]">Technical Note</span>
+                              {currentTopic.recommendation}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-6 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row sm:justify-between items-center gap-4">
+                <div className="text-slate-400 text-xs text-center sm:text-left flex items-center gap-1">
+                  💡 Stuck? Our Harare-based support agents are live 24/7.
+                </div>
+                <div className="flex gap-3 w-full sm:w-auto">
+                  <a 
+                    href="https://wa.me/263781899027?text=Hi%20Alvary%2C%20I%20need%20help%20with%20my%20GPS%20tracking%20device."
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl transition-all shadow-md shadow-emerald-600/10 flex items-center gap-1.5 justify-center text-sm cursor-pointer"
+                  >
+                    <MessageCircle size={16} /> Live Chat
+                  </a>
+                  <button 
+                    onClick={() => setShowHelpModal(false)}
+                    className="flex-1 sm:flex-none bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-5 py-2.5 rounded-xl transition-colors text-sm cursor-pointer"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>
