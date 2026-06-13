@@ -275,275 +275,39 @@ export default function App() {
     setIsMenuOpen(false);
   };
 
-  if (!isLoggedIn) {
-    const handleLoginSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!email.trim() || !password.trim()) {
-        setLoginError('Please enter your email and password credentials.');
-        return;
+  const handleLoginSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !password.trim()) {
+      setLoginError('Please enter your email and password credentials.');
+      return;
+    }
+    setLoginError('');
+    setIsLoggingIn(true);
+    
+    const steps = [
+      "Initializing terminal handshake protocol...",
+      "Querying Harare cloud node gateways...",
+      "Authenticating RSA secure credentials...",
+      "Syncing Alvary Zimbabwe telematics database...",
+      "Establishing persistent GPRS server stream..."
+    ];
+    
+    let stepIdx = 0;
+    setLoginStep(steps[0]);
+    setLoginStepIndex(0);
+    
+    const interval = setInterval(() => {
+      stepIdx++;
+      if (stepIdx < steps.length) {
+        setLoginStep(steps[stepIdx]);
+        setLoginStepIndex(stepIdx);
+      } else {
+        clearInterval(interval);
+        setIsLoggingIn(false);
+        setIsLoggedIn(true);
       }
-      setLoginError('');
-      setIsLoggingIn(true);
-      
-      const steps = [
-        "Initializing terminal handshake protocol...",
-        "Querying Harare cloud node gateways...",
-        "Authenticating RSA secure credentials...",
-        "Syncing Alvary Zimbabwe telematics database...",
-        "Establishing persistent GPRS server stream..."
-      ];
-      
-      let stepIdx = 0;
-      setLoginStep(steps[0]);
-      setLoginStepIndex(0);
-      
-      const interval = setInterval(() => {
-        stepIdx++;
-        if (stepIdx < steps.length) {
-          setLoginStep(steps[stepIdx]);
-          setLoginStepIndex(stepIdx);
-        } else {
-          clearInterval(interval);
-          setIsLoggingIn(false);
-          setIsLoggedIn(true);
-        }
-      }, 400);
-    };
-
-    return (
-      <div className="min-h-screen bg-slate-950 flex flex-col lg:flex-row relative overflow-hidden font-sans text-slate-100 select-none">
-        {/* Dynamic Grid Background Overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-40 pointer-events-none" />
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-brand-600/10 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none" />
-
-        {/* Left Module: Live Workstation Visualizer Dashboard */}
-        <div className="hidden lg:flex lg:w-1/2 p-16 flex-col justify-between relative bg-slate-950 border-r border-slate-900/50 z-10 overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[120px] pointer-events-none" />
-          
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center overflow-hidden shadow-lg shadow-brand-600/20">
-              <img src={LogoIcon} alt="Alvary" className="w-full h-full object-cover" />
-            </div>
-            <div>
-              <span className="text-xl font-black tracking-tight leading-none text-white block">ALVARY CENTRAL</span>
-              <span className="text-[9px] font-bold tracking-[0.25em] uppercase text-brand-400 block mt-0.5">TELEMATICS GATEWAY</span>
-            </div>
-          </div>
-
-          <div className="max-w-xl space-y-6 relative my-auto">
-            <span className="text-[10px] font-black uppercase bg-brand-500/10 text-brand-400 px-3.5 py-1.5 rounded-full border border-brand-500/20 inline-block tracking-widest">
-              ⚡ LIVE WORKSTATION MATRIX
-            </span>
-            <h1 className="text-4xl xl:text-5xl font-black text-white font-sans tracking-tight leading-tight">
-              Secure Vehicle Tracking & <span className="text-brand-500">Fleet Dispatch Portal</span>
-            </h1>
-            <p className="text-slate-400 text-base leading-relaxed">
-              Zimbabwe's premiere real-time tracking console. Monitor remote Solenoid engine cut-offs, analyze highway speed zones, manage geofencing safety boundaries, and sync directly with user smartphones.
-            </p>
-
-            {/* Simulated Live telemetry card */}
-            <div className="bg-slate-900/40 backdrop-blur-md rounded-2xl p-6 border border-slate-800 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black text-slate-400 tracking-wider uppercase flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Gateway Operations Status
-                </span>
-                <span className="text-[10px] uppercase font-bold text-emerald-400 font-mono">100% SECURE</span>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                  <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-wider block font-mono">Harare Node</span>
-                  <span className="text-sm font-black text-white block mt-0.5">🟢 ACTIVE</span>
-                  <span className="text-[8px] text-slate-500 block leading-none mt-1">2.4ms latency</span>
-                </div>
-                <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                  <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-wider block font-mono">Bulawayo Node</span>
-                  <span className="text-sm font-black text-white block mt-0.5">🟢 ONLINE</span>
-                  <span className="text-[8px] text-slate-500 block leading-none mt-1">4.1ms latency</span>
-                </div>
-                <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                  <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-wider block font-mono">Gweru Node</span>
-                  <span className="text-sm font-black text-white block mt-0.5">🟢 STANDBY</span>
-                  <span className="text-[8px] text-slate-500 block leading-none mt-1">Ready</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between text-slate-500 text-xs border-t border-slate-900/60 pt-6">
-            <span>© 2026 Alvary Technologies Zimbabwe</span>
-            <span className="font-mono text-[10px]">v4.8 - Harare Central Hub</span>
-          </div>
-        </div>
-
-        {/* Right Module: Safe Secure Login Card Frame */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-16 relative z-10 bg-slate-900/10 backdrop-blur-md min-h-screen">
-          <div className="w-full max-w-md bg-slate-900/95 backdrop-blur-xl rounded-3xl border border-slate-800 p-8 md:p-10 shadow-2xl relative overflow-hidden">
-            
-            <div className="absolute top-0 right-0 w-48 h-48 bg-brand-500/5 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="mb-8 space-y-2">
-              <div className="lg:hidden flex items-center gap-2.5 mb-6">
-                <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center overflow-hidden">
-                  <img src={LogoIcon} alt="Alvary" className="w-full h-full object-cover" />
-                </div>
-                <span className="text-sm font-black tracking-tight text-white leading-none uppercase">ALVARY TECHNOLOGIES</span>
-              </div>
-              
-              <span className="text-[10px] uppercase font-black bg-slate-950 border border-slate-850 px-3 py-1.5 rounded-md inline-block tracking-widest text-brand-400 font-mono">
-                🔒 SECURITY COMPLIANT GATEWAY
-              </span>
-              <h2 className="text-2xl font-black text-white font-sans tracking-tight">Client Hub Sign In</h2>
-              <p className="text-slate-400 text-xs leading-relaxed">
-                Connect your master terminal account parameters to access active telemetry dispatch panels.
-              </p>
-            </div>
-
-            {/* Instant Demo Autoload Banner */}
-            <div className="bg-slate-950 rounded-2xl p-4 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-              <div className="text-left font-sans">
-                <span className="text-[9px] font-black uppercase text-slate-500 leading-tight block tracking-wider">Access Node</span>
-                <span className="text-xs font-bold text-slate-300 block mt-0.5 leading-snug">Demo account preloaded</span>
-                <span className="text-[10px] text-brand-400 block leading-tight font-mono mt-0.5">admin@alvary.co.zw</span>
-              </div>
-              <button 
-                type="button"
-                onClick={() => {
-                  setEmail('admin@alvary.co.zw');
-                  setPassword('admin9904');
-                  setLoginError('');
-                }}
-                className="w-full sm:w-auto bg-brand-600 hover:bg-brand-700 active:scale-95 text-white font-bold text-xs px-3 py-2 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer shrink-0"
-              >
-                <Key size={12} />
-                Instant Autofill
-              </button>
-            </div>
-
-            <form onSubmit={handleLoginSubmit} className="space-y-4">
-              {loginError && (
-                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-medium">
-                  ⚠️ {loginError}
-                </div>
-              )}
-
-              <div className="space-y-1">
-                <label className="block text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Email Address</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
-                    <Mail size={16} />
-                  </span>
-                  <input 
-                    type="email" 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="operator@alvary.co.zw"
-                    disabled={isLoggingIn}
-                    className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl pl-10 pr-4 py-2.5 placeholder-slate-650 text-xs focus:outline-none focus:border-brand-500 transition-all font-medium disabled:opacity-50"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <div className="flex justify-between items-center">
-                  <label className="block text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Security Key</label>
-                  <button 
-                    type="button"
-                    onClick={() => {
-                      setLoginError("Demo accounts passwords are pre-secured. Click Instant Autofill to restore defaults.");
-                    }}
-                    className="text-[9px] font-bold text-brand-500 hover:text-brand-400 transition-colors uppercase tracking-wide cursor-pointer"
-                  >
-                    Forgot?
-                  </button>
-                </div>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
-                    <Lock size={16} />
-                  </span>
-                  <input 
-                    type={passwordVisible ? "text" : "password"} 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    disabled={isLoggingIn}
-                    className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl pl-10 pr-16 py-2.5 placeholder-slate-650 text-xs focus:outline-none focus:border-brand-500 transition-all font-mono disabled:opacity-50"
-                  />
-                  <button 
-                    type="button" 
-                    disabled={isLoggingIn}
-                    onClick={() => setPasswordVisible(!passwordVisible)}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-[10px] font-bold text-slate-500 hover:text-slate-300 transition-colors cursor-pointer select-none uppercase tracking-widest"
-                  >
-                    {passwordVisible ? "Hide" : "Show"}
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center pt-1">
-                <input 
-                  id="remember" 
-                  type="checkbox" 
-                  defaultChecked
-                  className="w-3.5 h-3.5 rounded text-brand-500 bg-slate-950 border-slate-800 focus:ring-brand-500 border-none cursor-pointer" 
-                />
-                <label htmlFor="remember" className="ml-2 text-xs text-slate-400 leading-none select-none cursor-pointer">
-                  Remember terminal parameters
-                </label>
-              </div>
-
-              {/* Login Submit Command */}
-              {isLoggingIn ? (
-                <div className="space-y-3 pt-2">
-                  <button 
-                    type="button" 
-                    disabled
-                    className="w-full bg-brand-600/50 text-slate-300 font-bold py-2.5 rounded-xl cursor-not-allowed text-xs flex items-center justify-center gap-1.5"
-                  >
-                    <RefreshCw size={14} className="animate-spin text-white" />
-                    Connecting...
-                  </button>
-                  <div className="space-y-1.5 font-mono">
-                    <div className="flex items-center justify-between text-[8px] font-black uppercase text-slate-400">
-                      <span>Gateway handshake</span>
-                      <span className="text-brand-400">{Math.round((loginStepIndex + 1) * 20)}%</span>
-                    </div>
-                    {/* Progress Bar visual indicator */}
-                    <div className="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden border border-slate-850">
-                      <motion.div 
-                        initial={{ width: '0%' }}
-                        animate={{ width: `${(loginStepIndex + 1) * 20}%` }}
-                        transition={{ duration: 0.3 }}
-                        className="h-full bg-brand-500"
-                      />
-                    </div>
-                    <p className="text-[9px] text-brand-400 italic text-center leading-none mt-1 animate-pulse">
-                      {loginStep}
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <button 
-                  type="submit" 
-                  className="w-full bg-brand-600 hover:bg-brand-700 active:scale-98 text-white font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-brand-600/10"
-                >
-                  <Shield size={14} />
-                  Establish Dispatch Connection
-                </button>
-              )}
-            </form>
-
-            <div className="border-t border-slate-800/60 pt-4 mt-6 flex flex-col text-center space-y-1 select-none">
-              <span className="text-[8px] text-slate-500 uppercase font-black">Authorized Personnel Only</span>
-              <p className="text-[9px] text-slate-500 leading-normal max-w-xs mx-auto">
-                System activities are logged securely under Zimbabwe cyber security directives.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    }, 400);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 overflow-x-hidden">
@@ -580,26 +344,40 @@ export default function App() {
             </a>
 
             {/* Operator Session & Logout options */}
-            <div className={`flex items-center gap-3 border-l ${scrolled ? 'border-slate-200 text-slate-850' : 'border-white/20 text-white'} pl-5 ml-1 select-none`}>
-              <div className="flex flex-col text-right">
-                <span className={`text-[9px] font-black uppercase tracking-wider ${scrolled ? 'text-brand-600' : 'text-brand-400 font-bold'}`}>CONSOLE SESSION</span>
-                <span className={`text-[11px] font-bold ${scrolled ? 'text-slate-500' : 'text-slate-300'}`}>admin@alvary.co.zw</span>
+            {isLoggedIn ? (
+              <div className={`flex items-center gap-3 border-l ${scrolled ? 'border-slate-200 text-slate-850' : 'border-white/20 text-white'} pl-5 ml-1 select-none`}>
+                <div className="flex flex-col text-right">
+                  <span className={`text-[9px] font-black uppercase tracking-wider ${scrolled ? 'text-brand-600' : 'text-brand-400 font-bold'}`}>CONSOLE SESSION</span>
+                  <span className={`text-[11px] font-bold ${scrolled ? 'text-slate-500' : 'text-slate-300'}`}>admin@alvary.co.zw</span>
+                </div>
+                <button 
+                  onClick={() => {
+                    setIsLoggedIn(false);
+                    setIsLoggingIn(false);
+                  }} 
+                  className={`p-2 rounded-xl transition-all flex items-center justify-center cursor-pointer ${
+                    scrolled 
+                      ? 'bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100' 
+                      : 'bg-white/10 hover:bg-white/15 text-rose-400 border border-white/5 shadow-inner'
+                  }`}
+                  title="Disconnect Terminal Session"
+                >
+                  <X size={15} />
+                </button>
               </div>
-              <button 
-                onClick={() => {
-                  setIsLoggedIn(false);
-                  setIsLoggingIn(false);
-                }} 
-                className={`p-2 rounded-xl transition-all flex items-center justify-center cursor-pointer ${
+            ) : (
+              <button
+                onClick={() => scrollToSection('app-sync')}
+                className={`text-xs font-black tracking-widest uppercase border border-dashed rounded-xl px-4 py-2.5 transition-all flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] ${
                   scrolled 
-                    ? 'bg-rose-50 hover:bg-rose-105 hover:bg-rose-100 text-rose-600 border border-rose-100' 
-                    : 'bg-white/10 hover:bg-white/15 text-rose-400 border border-white/5 shadow-inner'
+                    ? 'border-brand-600/30 text-brand-600 bg-brand-50/20 hover:bg-brand-50' 
+                    : 'border-white/20 text-white bg-white/5 hover:bg-white/10'
                 }`}
-                title="Disconnect Terminal Session"
               >
-                <X size={15} />
+                <Lock size={12} />
+                Client Login
               </button>
-            </div>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -639,17 +417,30 @@ export default function App() {
                 <a href="https://wa.me/263781899027" className="bg-brand-600 text-white py-4 rounded-xl font-bold text-lg">
                   WhatsApp Us
                 </a>
-                <button 
-                  onClick={() => {
-                    setIsLoggedIn(false);
-                    setIsLoggingIn(false);
-                    setIsMenuOpen(false);
-                  }}
-                  className="bg-rose-50 text-rose-600 border border-rose-100 py-3.5 rounded-xl font-bold text-lg cursor-pointer transition-all hover:bg-rose-100/50 flex items-center justify-center gap-2"
-                >
-                  <Lock size={18} />
-                  Disconnect Session
-                </button>
+                {isLoggedIn ? (
+                  <button 
+                    onClick={() => {
+                      setIsLoggedIn(false);
+                      setIsLoggingIn(false);
+                      setIsMenuOpen(false);
+                    }}
+                    className="bg-rose-50 text-rose-600 border border-rose-105 py-3.5 rounded-xl font-bold text-lg cursor-pointer transition-all hover:bg-rose-100/50 flex items-center justify-center gap-2"
+                  >
+                    <Lock size={18} />
+                    Disconnect Session
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => {
+                      scrollToSection('app-sync');
+                      setIsMenuOpen(false);
+                    }}
+                    className="bg-brand-50 text-brand-600 border border-brand-100 py-3.5 rounded-xl font-bold text-lg cursor-pointer transition-all hover:bg-brand-100/50 flex items-center justify-center gap-2"
+                  >
+                    <Lock size={18} />
+                    Client Portal
+                  </button>
+                )}
               </div>
             </div>
           </motion.div>
@@ -1097,18 +888,26 @@ export default function App() {
                       <Laptop size={20} />
                     </div>
                     <div>
-                      <h4 className="text-[10px] uppercase font-black tracking-widest text-brand-500">Fleet Control Portal</h4>
-                      <h3 className="text-lg font-extrabold text-white">Alvary Central Web Console</h3>
+                      <h4 className="text-[10px] uppercase font-black tracking-widest text-brand-500">{isLoggedIn ? "Fleet Control Portal" : "Client Portal Gate"}</h4>
+                      <h3 className="text-lg font-extrabold text-white">{isLoggedIn ? "Alvary Central Web Console" : "Client Portal Sync Activation"}</h3>
                     </div>
                   </div>
-                  <div className="inline-flex self-start sm:self-auto items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold font-mono">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    Secure Link
-                  </div>
+                  {isLoggedIn ? (
+                    <div className="inline-flex self-start sm:self-auto items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold font-mono">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      Secure Link
+                    </div>
+                  ) : (
+                    <div className="inline-flex self-start sm:self-auto items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-[10px] uppercase tracking-widest font-bold font-mono">
+                      <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                      Portal Locked
+                    </div>
+                  )}
                 </div>
 
-                {/* Simulated Vehicle Settings */}
-                <div className="bg-slate-950/60 rounded-2xl p-6 border border-slate-850 mb-8 space-y-6">
+                {isLoggedIn ? (
+                  <>
+                    <div className="bg-slate-950/60 rounded-2xl p-6 border border-slate-850 mb-8 space-y-6">
                   <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-brand-500" /> Web-Mobile Pairing Properties
                   </h4>
@@ -1380,6 +1179,159 @@ export default function App() {
                     </button>
                   </div>
                 </div>
+              </>
+              ) : (
+                <div className="space-y-6 py-2 select-none">
+                  {/* Explanation */}
+                  <p className="text-slate-405 text-xs leading-relaxed max-w-lg mb-6 text-slate-400">
+                    Connection to the master dispatch gateway is currently idle. 
+                    Please enter security credentials below to link the online console with the companion mobile device mockup on the right and begin simulating live hardware telemetry.
+                  </p>
+
+                  {/* Instant Demo Autoload Banner */}
+                  <div className="bg-slate-950 rounded-2xl p-4.5 border border-slate-850 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="text-left font-sans">
+                      <span className="text-[9px] font-black uppercase text-slate-500 leading-tight block tracking-wider">Access Node</span>
+                      <span className="text-xs font-bold text-slate-300 block mt-0.5 leading-snug">Demo account preloaded</span>
+                      <span className="text-[10px] text-brand-404 text-brand-400 block leading-tight font-mono mt-0.5">admin@alvary.co.zw</span>
+                    </div>
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        setEmail('admin@alvary.co.zw');
+                        setPassword('admin9904');
+                        setLoginError('');
+                      }}
+                      className="w-full sm:w-auto bg-brand-600 hover:bg-brand-700 active:scale-95 text-white font-bold text-xs px-3.5 py-2.5 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                    >
+                      <Key size={12} />
+                      Instant Autofill
+                    </button>
+                  </div>
+
+                  {/* Sign In Form */}
+                  <div className="space-y-4">
+                    {loginError && (
+                      <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-medium">
+                        ⚠️ {loginError}
+                      </div>
+                    )}
+
+                    <div className="space-y-1">
+                      <label className="block text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Email Address</label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                          <Mail size={16} />
+                        </span>
+                        <input 
+                          type="email" 
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="operator@alvary.co.zw"
+                          disabled={isLoggingIn}
+                          className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl pl-10 pr-4 py-2.5 placeholder-slate-650 text-xs focus:outline-none focus:border-brand-500 transition-all font-medium disabled:opacity-50"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex justify-between items-center">
+                        <label className="block text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Security Key</label>
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            setLoginError("Demo accounts passwords are pre-secured. Click Instant Autofill to restore defaults.");
+                          }}
+                          className="text-[9px] font-bold text-brand-500 hover:text-brand-400 transition-colors uppercase tracking-wide cursor-pointer"
+                        >
+                          Forgot?
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                          <Lock size={16} />
+                        </span>
+                        <input 
+                          type={passwordVisible ? "text" : "password"} 
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="••••••••"
+                          disabled={isLoggingIn}
+                          className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl pl-10 pr-16 py-2.5 placeholder-slate-650 text-xs focus:outline-none focus:border-brand-500 transition-all font-mono disabled:opacity-50"
+                        />
+                        <button 
+                          type="button" 
+                          disabled={isLoggingIn}
+                          onClick={() => setPasswordVisible(!passwordVisible)}
+                          className="absolute inset-y-0 right-0 flex items-center pr-3 text-[10px] font-bold text-slate-500 hover:text-slate-300 transition-colors cursor-pointer select-none uppercase tracking-widest"
+                        >
+                          {passwordVisible ? "Hide" : "Show"}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center pt-1">
+                      <input 
+                        id="remember-inline" 
+                        type="checkbox" 
+                        defaultChecked
+                        className="w-3.5 h-3.5 rounded text-brand-500 bg-slate-950 border-slate-800 focus:ring-brand-500 border-none cursor-pointer" 
+                      />
+                      <label htmlFor="remember-inline" className="ml-2 text-xs text-slate-400 leading-none select-none cursor-pointer">
+                        Remember terminal parameters
+                      </label>
+                    </div>
+
+                    {/* Login Submit Command */}
+                    {isLoggingIn ? (
+                      <div className="space-y-3 pt-2">
+                        <button 
+                          type="button" 
+                          disabled
+                          className="w-full bg-brand-600/50 text-slate-300 font-bold py-2.5 rounded-xl cursor-not-allowed text-xs flex items-center justify-center gap-1.5"
+                        >
+                          <RefreshCw size={14} className="animate-spin text-white" />
+                          Connecting...
+                        </button>
+                        <div className="space-y-1.5 font-mono">
+                          <div className="flex items-center justify-between text-[8px] font-black uppercase text-slate-400">
+                            <span>Gateway handshake</span>
+                            <span className="text-brand-400">{Math.round((loginStepIndex + 1) * 20)}%</span>
+                          </div>
+                          {/* Progress Bar visual indicator */}
+                          <div className="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden border border-slate-850">
+                            <motion.div 
+                              initial={{ width: '0%' }}
+                              animate={{ width: `${(loginStepIndex + 1) * 20}%` }}
+                              transition={{ duration: 0.3 }}
+                              className="h-full bg-brand-500"
+                            />
+                          </div>
+                          <p className="text-[9px] text-brand-405 text-brand-400 italic text-center leading-none mt-1 animate-pulse">
+                            {loginStep}
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <button 
+                        onClick={handleLoginSubmit}
+                        type="button"
+                        className="w-full bg-brand-600 hover:bg-brand-700 active:scale-98 text-white font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-brand-600/10"
+                      >
+                        <Shield size={14} />
+                        Establish Dispatch Connection
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="border-t border-slate-800/40 pt-4 mt-8 flex flex-col text-center space-y-1 select-none">
+                    <span className="text-[8px] text-slate-500 uppercase font-black">Authorized Personnel Only</span>
+                    <p className="text-[9px] text-slate-500 leading-normal max-w-xs mx-auto">
+                      System activities are logged securely under Zimbabwe cyber security directives.
+                    </p>
+                  </div>
+                </div>
+              )}
               </div>
 
               <div className="border-t border-slate-800/80 pt-6 mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-xs text-center sm:text-left">
@@ -1408,8 +1360,27 @@ export default function App() {
                 <div className="absolute -right-[5px] top-36 w-[3px] h-18 bg-slate-800 rounded-r" />
 
                 {/* Smartphone Operating Screen */}
-                <div className="w-full h-full bg-slate-950 rounded-[2.8rem] relative overflow-hidden text-slate-100 flex flex-col justify-between selection-none">
+                <div className="w-full h-full bg-slate-950 rounded-[2.8rem] relative overflow-hidden text-slate-100 flex flex-col justify-between select-none">
                   
+                  {!isLoggedIn && (
+                    <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-md z-[45] flex flex-col items-center justify-center p-6 text-center select-none">
+                      <div className="w-16 h-16 rounded-3xl bg-brand-600/10 border border-brand-500/30 flex items-center justify-center text-brand-400 mb-6 animate-pulse">
+                        <Smartphone size={32} />
+                      </div>
+                      <span className="text-[10px] font-black uppercase text-brand-400 tracking-widest bg-brand-500/10 border border-brand-500/30 px-3 py-1 rounded-md mb-3">
+                        PAIRING REQUIRED
+                      </span>
+                      <h4 className="font-sans font-black text-white text-base">Awaiting Portal Handshake</h4>
+                      <p className="text-slate-400 text-xs leading-relaxed mt-2 max-w-[220px]">
+                        Please log in to the <b>Client Portal</b> on the left to establish a secure telemetry link with this device.
+                      </p>
+                      <div className="flex items-center gap-1.5 mt-6 text-[9px] font-mono text-slate-500">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                        Endpoint: Disconnected
+                      </div>
+                    </div>
+                  )}
+
                   {/* Subtle glass reflection overlay */}
                   <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/5 to-transparent pointer-events-none z-30" />
 
