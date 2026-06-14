@@ -45,7 +45,7 @@ import HowItWorksImg from './assets/images/regenerated_image_1778504127387.jpg';
 import LogoIcon from './assets/images/regenerated_image_1778504701095.jpg';
 
 // Types
-type SectionId = 'home' | 'services' | 'app-sync' | 'why-us' | 'about' | 'pricing' | 'contact' | 'how-it-works';
+type SectionId = 'home' | 'services' | 'client-portal' | 'why-us' | 'about' | 'pricing' | 'contact' | 'how-it-works';
 
 const HERO_IMAGE = "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&q=80&w=2070";
 
@@ -199,7 +199,7 @@ export default function App() {
 
   // Authentication states
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [email, setEmail] = useState('admin@alvary.co.zw');
+  const [email, setEmail] = useState('admin@alvarytechnologies.co.zw');
   const [password, setPassword] = useState('admin9904');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginStep, setLoginStep] = useState('');
@@ -324,7 +324,7 @@ export default function App() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            {['Home', 'Services', 'App Sync', 'Why Us', 'About', 'Contact'].map((item) => (
+            {['Home', 'Services', 'Client Portal', 'Why Us', 'About', 'Contact'].map((item) => (
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
@@ -348,7 +348,7 @@ export default function App() {
               <div className={`flex items-center gap-3 border-l ${scrolled ? 'border-slate-200 text-slate-850' : 'border-white/20 text-white'} pl-5 ml-1 select-none`}>
                 <div className="flex flex-col text-right">
                   <span className={`text-[9px] font-black uppercase tracking-wider ${scrolled ? 'text-brand-600' : 'text-brand-400 font-bold'}`}>CONSOLE SESSION</span>
-                  <span className={`text-[11px] font-bold ${scrolled ? 'text-slate-500' : 'text-slate-300'}`}>admin@alvary.co.zw</span>
+                  <span className={`text-[11px] font-bold ${scrolled ? 'text-slate-500' : 'text-slate-300'}`}>admin@alvarytechnologies.co.zw</span>
                 </div>
                 <button 
                   onClick={() => {
@@ -367,7 +367,7 @@ export default function App() {
               </div>
             ) : (
               <button
-                onClick={() => scrollToSection('app-sync')}
+                onClick={() => scrollToSection('client-portal')}
                 className={`text-xs font-black tracking-widest uppercase border border-dashed rounded-xl px-4 py-2.5 transition-all flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] ${
                   scrolled 
                     ? 'border-brand-600/30 text-brand-600 bg-brand-50/20 hover:bg-brand-50' 
@@ -400,7 +400,7 @@ export default function App() {
             className="fixed inset-0 z-40 bg-white pt-24 px-6 md:hidden"
           >
             <div className="flex flex-col gap-6 text-center">
-              {['Home', 'Services', 'App Sync', 'Why Us', 'About', 'Contact'].map((item) => (
+              {['Home', 'Services', 'Client Portal', 'Why Us', 'About', 'Contact'].map((item) => (
                 <button
                   key={item}
                   onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))}
@@ -432,7 +432,7 @@ export default function App() {
                 ) : (
                   <button 
                     onClick={() => {
-                      scrollToSection('app-sync');
+                      scrollToSection('client-portal');
                       setIsMenuOpen(false);
                     }}
                     className="bg-brand-50 text-brand-600 border border-brand-100 py-3.5 rounded-xl font-bold text-lg cursor-pointer transition-all hover:bg-brand-100/50 flex items-center justify-center gap-2"
@@ -1343,211 +1343,9 @@ export default function App() {
                     Gateway: PORT 3000
                   </span>
                 </div>
+
               </div>
             </div>
-
-            {/* Right Module: Sleek Dynamic iOS Smartphone App Simulation mockup */}
-            <div className="lg:col-span-5 flex items-center justify-center relative">
-              <div className="absolute inset-0 bg-gradient-to-tr from-brand-500/20 via-transparent to-emerald-500/10 rounded-[3rem] blur-3xl pointer-events-none" />
-              
-              {/* Smartphone Case Frame Wrapper */}
-              <div className="relative mx-auto w-full max-w-[340px] md:max-w-[360px] aspect-[9/18.5] bg-slate-900 rounded-[3.2rem] p-[9px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] border-4 border-slate-800/80 hover:border-slate-750 transition-colors">
-                
-                {/* Hardware Details: Side buttons mock */}
-                <div className="absolute -left-[5px] top-28 w-[3px] h-10 bg-slate-800 rounded-l" />
-                <div className="absolute -left-[5px] top-40 w-[3px] h-14 bg-slate-800 rounded-l" />
-                <div className="absolute -left-[5px] top-56 w-[3px] h-14 bg-slate-800 rounded-l" />
-                <div className="absolute -right-[5px] top-36 w-[3px] h-18 bg-slate-800 rounded-r" />
-
-                {/* Smartphone Operating Screen */}
-                <div className="w-full h-full bg-slate-950 rounded-[2.8rem] relative overflow-hidden text-slate-100 flex flex-col justify-between select-none">
-                  
-                  {!isLoggedIn && (
-                    <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-md z-[45] flex flex-col items-center justify-center p-6 text-center select-none">
-                      <div className="w-16 h-16 rounded-3xl bg-brand-600/10 border border-brand-500/30 flex items-center justify-center text-brand-400 mb-6 animate-pulse">
-                        <Smartphone size={32} />
-                      </div>
-                      <span className="text-[10px] font-black uppercase text-brand-400 tracking-widest bg-brand-500/10 border border-brand-500/30 px-3 py-1 rounded-md mb-3">
-                        PAIRING REQUIRED
-                      </span>
-                      <h4 className="font-sans font-black text-white text-base">Awaiting Portal Handshake</h4>
-                      <p className="text-slate-400 text-xs leading-relaxed mt-2 max-w-[220px]">
-                        Please log in to the <b>Client Portal</b> on the left to establish a secure telemetry link with this device.
-                      </p>
-                      <div className="flex items-center gap-1.5 mt-6 text-[9px] font-mono text-slate-500">
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                        Endpoint: Disconnected
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Subtle glass reflection overlay */}
-                  <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/5 to-transparent pointer-events-none z-30" />
-
-                  {/* Operational Status bar */}
-                  <div className="p-4 pt-6 pb-2 grid grid-cols-3 items-center relative z-40 bg-slate-950/20 text-white select-none">
-                    <div className="text-[11px] font-bold tracking-tight">08:42</div>
-                    <div className="justify-self-center flex items-center justify-center">
-                      {/* Interactive dynamic island pill notch */}
-                      <div className="w-24 h-4 bg-slate-900 rounded-full border border-slate-800 flex items-center justify-center text-[7px] text-slate-500 font-black uppercase tracking-wider">
-                        Alvary Air
-                      </div>
-                    </div>
-                    <div className="justify-self-end flex items-center gap-1 text-xs">
-                      <span className="text-[8px] font-black tracking-widest text-[#ccd1de]">LTE</span>
-                      <Wifi size={10} className="text-[#ccd1de]" />
-                      <div className="w-5 h-2.5 border border-white/20 rounded-xs p-0.5 flex items-center bg-white/5">
-                        <div className="h-full w-4/5 bg-emerald-500 rounded-2xs" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Dynamic Alert Dropdowns */}
-                  <AnimatePresence>
-                    {mockNotification && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: -50, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -50, scale: 0.95 }}
-                        className="absolute top-[52px] left-3 right-3 z-50 overflow-hidden"
-                      >
-                        <div className={`p-4 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.6)] border flex gap-3 text-left ${
-                          mockNotification.type === 'danger' 
-                            ? 'bg-rose-950/95 border-rose-800/80 text-rose-100'
-                            : mockNotification.type === 'success'
-                            ? 'bg-emerald-950/95 border-emerald-800/80 text-emerald-100'
-                            : 'bg-slate-900/95 border-slate-700/80 text-slate-100'
-                        }`}>
-                          <div className={`p-1.5 rounded-lg flex-shrink-0 flex items-center justify-center ${
-                            mockNotification.type === 'danger'
-                              ? 'bg-rose-500/20 text-rose-400'
-                              : mockNotification.type === 'success'
-                              ? 'bg-emerald-500/20 text-emerald-400'
-                              : 'bg-brand-500/20 text-brand-400'
-                          }`}>
-                            <AlertTriangle size={14} className="animate-pulse" />
-                          </div>
-                          <div className="space-y-1 flex-1">
-                            <div className="text-[10px] font-black uppercase leading-tight tracking-wider text-white">
-                              {mockNotification.title}
-                            </div>
-                            <p className="text-[10px] leading-relaxed text-slate-200">
-                              {mockNotification.body}
-                            </p>
-                            <button 
-                              onClick={() => setMockNotification(null)}
-                              className="text-[9px] font-bold uppercase text-brand-400 tracking-widest hover:opacity-85 pt-1.5 block cursor-pointer"
-                            >
-                              Acknowledge Alert ×
-                            </button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Onscreen live GPS map and logs view */}
-                  <div className="flex-1 relative bg-slate-950 flex flex-col overflow-hidden">
-                    
-                    {/* Simulated vector road grid map */}
-                    <div className="absolute inset-0 opacity-40">
-                      <div className="absolute inset-0 bg-[radial-gradient(#334155_1.5px,transparent_1.5px)] bg-[size:18px_18px]" />
-                      <div className="absolute top-24 left-1/3 w-32 h-32 rounded-full border border-slate-800/70" />
-                      <div className="absolute top-12 left-12 w-44 h-32 border-l border-b border-dashed border-slate-850" />
-                      <div className="absolute bottom-20 right-8 w-44 h-24 border-r border-t border-dashed border-slate-850" />
-                    </div>
-
-                    {/* Live Marker Pulse pin */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
-                      <div className="relative">
-                        <span className="absolute inline-flex h-12 w-12 rounded-full bg-brand-500/30 opacity-40 animate-ping -left-4 -top-4" />
-                        <div className="w-4.5 h-4.5 bg-brand-600 rounded-full border-2 border-white shadow-xl flex items-center justify-center relative z-10">
-                          <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                        </div>
-                      </div>
-                      <span className="bg-slate-900/90 border border-slate-800 text-[9px] font-bold px-2 py-0.5 rounded-md text-slate-300 mt-2 tracking-wide font-mono shadow-md backdrop-blur-xs select-none">
-                        {syncPlate}
-                      </span>
-                    </div>
-
-                    {/* Companion Title Header */}
-                    <div className="p-3.5 relative z-10 flex justify-between items-center bg-gradient-to-b from-slate-950 to-transparent select-none">
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-4 h-4 rounded-md bg-brand-600 flex items-center justify-center text-[7px] text-white font-black">A</div>
-                        <span className="text-[9px] font-black tracking-widest text-[#4f46e5] uppercase">ALVARY MOBILE</span>
-                      </div>
-                      <div className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[8px] font-black px-2 py-0.5 rounded-full tracking-wider uppercase">
-                        ONLINE
-                      </div>
-                    </div>
-
-                    {/* Synced App Widget panel */}
-                    <div className="mt-auto p-3 relative z-10">
-                      <div className="bg-slate-900/95 backdrop-blur-md rounded-2xl p-4.5 border border-slate-800 shadow-2xl relative">
-                        <div className="flex justify-between items-start mb-3.5 gap-2">
-                          <div className="truncate">
-                            <span className="text-[8px] font-bold uppercase text-brand-400 tracking-wider">SECURE TRANSMISSION</span>
-                            <h4 className="text-sm font-extrabold text-white leading-tight truncate">{simulatedVehicle}</h4>
-                            <span className="font-mono text-xs font-bold text-slate-400">{syncPlate}</span>
-                          </div>
-                          <div className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider shrink-0 flex items-center gap-1 border ${
-                            isEngineOn 
-                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                              : 'bg-slate-800 text-slate-500 border-slate-700'
-                          }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${isEngineOn ? 'bg-emerald-500' : 'bg-slate-600'}`} />
-                            {isEngineOn ? "ACC ON" : "ACC OFF"}
-                          </div>
-                        </div>
-
-                        {/* Telemetry diagnostics */}
-                        <div className="grid grid-cols-2 gap-2 mb-3.5 border-t border-slate-800 pt-3 select-none">
-                          <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850">
-                            <span className="text-[8px] text-slate-400 font-extrabold uppercase tracking-wide block">Speedometer</span>
-                            <span className="text-sm font-black text-white font-mono tracking-wide">{simulatedSpeed}</span>
-                            <span className="text-[9px] text-slate-500 font-bold"> km/h</span>
-                          </div>
-                          <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-850">
-                            <span className="text-[8px] text-slate-400 font-extrabold uppercase tracking-wide block">G-Sensor Shield</span>
-                            <span className={`text-xs font-black block truncate ${simulatedSpeed > 100 ? 'text-rose-400 animate-pulse font-extrabold' : 'text-slate-200'}`}>
-                              {simulatedSpeed > 100 ? '⚠️ High (0.8g)' : '🟢 Safe (1.0g)'}
-                            </span>
-                            <span className="text-[7px] text-slate-500 block truncate leading-none mt-0.5">3D accelerometry</span>
-                          </div>
-                        </div>
-
-                        {/* Relay state readout */}
-                        <div className={`p-3 rounded-xl border flex items-center justify-between text-xs transition-colors ${
-                          isFuelRelayLocked 
-                            ? 'bg-rose-950/20 border-rose-900/40 text-rose-300' 
-                            : 'bg-emerald-500/5 border-emerald-500/10 text-emerald-300'
-                        }`}>
-                          <div className="flex items-center gap-2">
-                            {isFuelRelayLocked ? <Lock size={12} className="text-rose-400 animate-pulse" /> : <Unlock size={12} className="text-emerald-400" />}
-                            <span className="font-extrabold uppercase text-[9px] tracking-wider truncate">
-                              Immobilizer: {isFuelRelayLocked ? "LOCK ENGAGED" : "UNLOCKED"}
-                            </span>
-                          </div>
-                          <span className={`text-[9px] font-black uppercase ${
-                            isFuelRelayLocked ? 'text-rose-400' : 'text-emerald-400'
-                          }`}>
-                            {isFuelRelayLocked ? "SOLENOID ON" : "READY"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Simulated App footer */}
-                  <div className="p-3 bg-slate-950 border-t border-slate-900/50 flex items-center justify-between gap-1 text-[8px] text-slate-500 font-mono select-none">
-                    <span>📱 Client Core v2.8</span>
-                    <span>🇿🇼 Alvary Telematics Corp</span>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
           </div>
 
           {/* Dedicated Download Badge Panel */}
