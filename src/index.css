@@ -11,10 +11,44 @@
     scroll-behavior: smooth;
     font-family: "Bahnschrift", "DIN Alternate", "Inter", sans-serif;
   }
+  
+  html.light {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
 }
 
 .glass-card {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* High-Contrast Light Mode Enhancements for Outdoor Daylight Readability */
+html.light {
+  --app-bg: #F8FAFC;
+  --app-card-bg: #FFFFFF;
+  --app-border: #CBD5E1;
+  --app-text: #0A192F;
+}
+
+html.light body {
+  background-color: #F8FAFC;
+  color: #0A192F;
+}
+
+/* Ensure high contrast for any background container in light mode */
+html.light .light-card {
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Daylight readability filter for harsh ambient outdoor sunlight */
+html.light ::selection {
+  background-color: #0A192F;
+  color: #FFFFFF;
 }
