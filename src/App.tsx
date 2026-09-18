@@ -195,6 +195,27 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash === '#privacy' || hash === '#privacy-policy') {
+        openLegalModal('privacy');
+      } else if (hash === '#terms' || hash === '#terms-of-service' || hash === '#terms-and-conditions') {
+        openLegalModal('terms');
+      } else if (hash === '#cookies' || hash === '#cookie-policy') {
+        openLegalModal('cookies');
+      } else if (hash === '#catalog') {
+        openCatalog('all');
+      } else if (hash === '#quote') {
+        setQuoteSheetOpen(true);
+      }
+    };
+
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
@@ -800,34 +821,52 @@ export default function App() {
 
       {/* Testimonials */}
       <section className={`py-24 border-b ${
-        isDark ? 'bg-white text-[#0A192F] border-blue-100' : 'bg-white text-[#0A192F] border-slate-200'
+        isDark ? 'bg-[#0A192F] text-white border-[#233554]' : 'bg-white text-[#0A192F] border-slate-200'
       }`}>
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="flex items-center justify-between mb-16">
             <div>
-              <h2 className="text-xs font-mono text-slate-700 font-bold uppercase tracking-widest mb-4">Client Success</h2>
-              <h3 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-[#0A192F]">Trusted By</h3>
+              <h2 className={`text-xs font-mono font-bold uppercase tracking-widest mb-4 ${
+                isDark ? 'text-blue-200' : 'text-slate-700'
+              }`}>Client Success</h2>
+              <h3 className={`text-4xl md:text-5xl font-black uppercase tracking-tighter ${
+                isDark ? 'text-white' : 'text-[#0A192F]'
+              }`}>Trusted By</h3>
             </div>
             <div className="hidden md:flex gap-2">
               <button 
                 onClick={prevTestimonial} 
                 aria-label="Previous client testimonial"
-                className="w-12 h-12 bg-white text-[#0A192F] border-2 border-[#0A192F] flex items-center justify-center hover:bg-[#0A192F] hover:text-white transition-colors cursor-pointer"
+                className={`w-12 h-12 border-2 flex items-center justify-center transition-colors cursor-pointer ${
+                  isDark 
+                    ? 'bg-[#112240] text-white border-[#233554] hover:bg-white hover:text-[#0A192F] hover:border-white' 
+                    : 'bg-white text-[#0A192F] border-[#0A192F] hover:bg-[#0A192F] hover:text-white'
+                }`}
               >
                 <ChevronLeft size={20} />
               </button>
               <button 
                 onClick={nextTestimonial} 
                 aria-label="Next client testimonial"
-                className="w-12 h-12 bg-white text-[#0A192F] border-2 border-[#0A192F] flex items-center justify-center hover:bg-[#0A192F] hover:text-white transition-colors cursor-pointer"
+                className={`w-12 h-12 border-2 flex items-center justify-center transition-colors cursor-pointer ${
+                  isDark 
+                    ? 'bg-[#112240] text-white border-[#233554] hover:bg-white hover:text-[#0A192F] hover:border-white' 
+                    : 'bg-white text-[#0A192F] border-[#0A192F] hover:bg-[#0A192F] hover:text-white'
+                }`}
               >
                 <ChevronRight size={20} />
               </button>
             </div>
           </div>
 
-          <div className="bg-white border-4 border-[#0A192F] p-8 md:p-16 relative shadow-sm">
-            <Quote className="absolute top-8 right-8 text-slate-100 w-24 h-24 z-0 pointer-events-none" />
+          <div className={`p-8 md:p-16 relative shadow-sm border-2 ${
+            isDark 
+              ? 'bg-[#112240] border-[#233554] text-white' 
+              : 'bg-white border-4 border-[#0A192F] text-[#0A192F]'
+          }`}>
+            <Quote className={`absolute top-8 right-8 w-24 h-24 z-0 pointer-events-none ${
+              isDark ? 'text-white/5' : 'text-slate-100'
+            }`} />
             <div className="relative z-10 min-h-[200px] flex flex-col justify-center">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -842,14 +881,18 @@ export default function App() {
                       <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <p className="text-2xl md:text-4xl font-black tracking-tight leading-tight mb-8 text-[#0A192F]">
+                  <p className={`text-2xl md:text-4xl font-black tracking-tight leading-tight mb-8 ${
+                    isDark ? 'text-white' : 'text-[#0A192F]'
+                  }`}>
                     "{TESTIMONIALS[activeTestimonial].quote}"
                     <span className="relative inline-block align-super ml-2 -translate-y-1.5 group/star">
                       <a
                         href={TESTIMONIALS[activeTestimonial].contactLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#0A192F] text-amber-400 hover:text-amber-300 hover:bg-[#112240] hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer border border-amber-400/50"
+                        className={`inline-flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-full text-amber-400 hover:text-amber-300 hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer border border-amber-400/50 ${
+                          isDark ? 'bg-[#0A192F] hover:bg-[#000814]' : 'bg-[#0A192F] hover:bg-[#112240]'
+                        }`}
                         title={`Click to reach out and ask ${TESTIMONIALS[activeTestimonial].name} personally about Alvary Technologies`}
                         aria-label={`Ask ${TESTIMONIALS[activeTestimonial].name} personally about us`}
                       >
@@ -864,10 +907,16 @@ export default function App() {
                       </span>
                     </span>
                   </p>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-100">
+                  <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t ${
+                    isDark ? 'border-[#233554]' : 'border-gray-100'
+                  }`}>
                     <div>
-                      <div className="font-bold text-[#0A192F] text-xl uppercase tracking-tight">{TESTIMONIALS[activeTestimonial].name}</div>
-                      <div className="text-gray-500 text-xs font-mono uppercase tracking-widest mt-1">
+                      <div className={`font-bold text-xl uppercase tracking-tight ${
+                        isDark ? 'text-white' : 'text-[#0A192F]'
+                      }`}>{TESTIMONIALS[activeTestimonial].name}</div>
+                      <div className={`text-xs font-mono uppercase tracking-widest mt-1 ${
+                        isDark ? 'text-blue-200' : 'text-gray-500'
+                      }`}>
                         {TESTIMONIALS[activeTestimonial].role} // {TESTIMONIALS[activeTestimonial].company}
                       </div>
                     </div>
@@ -875,7 +924,11 @@ export default function App() {
                       href={TESTIMONIALS[activeTestimonial].contactLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#0A192F] hover:text-blue-700 bg-gray-50 hover:bg-blue-50 border border-gray-200 px-3.5 py-2 rounded-xs transition-colors self-start sm:self-auto group/ref"
+                      className={`inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider px-3.5 py-2 rounded-xs transition-colors self-start sm:self-auto group/ref border ${
+                        isDark 
+                          ? 'text-white hover:text-blue-200 bg-[#0A192F] hover:bg-[#162a45] border-[#233554]' 
+                          : 'text-[#0A192F] hover:text-blue-700 bg-gray-50 hover:bg-blue-50 border-gray-200'
+                      }`}
                     >
                       <Star size={13} className="fill-amber-400 text-amber-400 group-hover/ref:rotate-12 transition-transform" />
                       <span>Ask {TESTIMONIALS[activeTestimonial].name} Personally</span>
@@ -891,14 +944,22 @@ export default function App() {
             <button 
               onClick={prevTestimonial} 
               aria-label="Previous client testimonial"
-              className="flex-1 h-12 bg-white text-[#0A192F] border-2 border-[#0A192F] flex items-center justify-center hover:bg-[#0A192F] hover:text-white transition-colors"
+              className={`flex-1 h-12 border-2 flex items-center justify-center transition-colors ${
+                isDark 
+                  ? 'bg-[#112240] text-white border-[#233554]' 
+                  : 'bg-white text-[#0A192F] border-[#0A192F]'
+              }`}
             >
               <ChevronLeft size={20} />
             </button>
             <button 
               onClick={nextTestimonial} 
               aria-label="Next client testimonial"
-              className="flex-1 h-12 bg-white text-[#0A192F] border-2 border-[#0A192F] flex items-center justify-center hover:bg-[#0A192F] hover:text-white transition-colors"
+              className={`flex-1 h-12 border-2 flex items-center justify-center transition-colors ${
+                isDark 
+                  ? 'bg-[#112240] text-white border-[#233554]' 
+                  : 'bg-white text-[#0A192F] border-[#0A192F]'
+              }`}
             >
               <ChevronRight size={20} />
             </button>
