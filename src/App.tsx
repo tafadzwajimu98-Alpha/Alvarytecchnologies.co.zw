@@ -13,6 +13,13 @@ import { LegalModal, LegalDocType } from './components/LegalModal';
 import { useTheme } from './context/ThemeContext';
 import { ThemeSwitcher } from './components/ThemeSwitcher';
 
+// Image assets (properly bundled and resolved in both dev and production)
+import alvaryLogoImg from './assets/images/alvary_technologies_logo_1789839093654.jpg';
+import vehicleTrackingImg from './assets/images/vehicle_tracking_dashboard_1789645419632.jpg';
+import fuelMonitoringImg from './assets/images/fuel_ultrasonic_sensor_installation_1789645375285.jpg';
+import securitySystemsImg from './assets/images/gps_tracker_installation_1789644426932.jpg';
+import professionalImg from './assets/images/young_african_professional_1789644630499.jpg';
+
 // --- DATA ---
 const STATS = [
   { value: '200+', label: 'Vehicles Tracked' },
@@ -27,21 +34,24 @@ const SOLUTIONS = [
     title: 'Vehicle Tracking',
     desc: 'Our GPS and Satellite tracking system ensures you can monitor the real-time location, speed, and route history of your vehicles. Set geofences, receive movement alerts, and keep your fleet on the right track.',
     features: ['Real-time GPS location monitoring', 'Route history & playback', 'Geofencing & speed alerts'],
-    img: '/src/assets/images/vehicle_tracking_dashboard_1789645419632.jpg'
+    img: vehicleTrackingImg,
+    fallback: '/assets/images/vehicle_tracking_dashboard_1789645419632.jpg'
   },
   {
     id: '02',
     title: 'Fuel Monitoring',
     desc: 'Gain complete visibility into your fuel usage. Our advanced sensors detect fuel levels, track consumption trends, and alert you to unusual activity such as theft or leakage.',
     features: ['Real-time fuel level tracking', 'Fuel theft detection', 'Consumption analytics reports'],
-    img: '/src/assets/images/fuel_ultrasonic_sensor_installation_1789645375285.jpg'
+    img: fuelMonitoringImg,
+    fallback: '/assets/images/fuel_ultrasonic_sensor_installation_1789645375285.jpg'
   },
   {
     id: '03',
     title: 'Security Systems',
     desc: 'Protect your fleet with multi-layered security. Receive instant alerts for unauthorized movement, activate remote immobilization, and ensure driver verification.',
     features: ['Real-time security alerts', 'Remote immobilization', 'Central locks and alarms', 'Driver identification tags'],
-    img: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&q=80&w=800'
+    img: securitySystemsImg,
+    fallback: '/assets/images/gps_tracker_installation_1789644426932.jpg'
   }
 ];
 
@@ -248,15 +258,25 @@ export default function App() {
           
           {/* Logo */}
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => scrollTo('home')}>
-            <div className={`${
+            <div className={`relative flex items-center justify-center rounded-sm transition-all overflow-hidden p-1 ${
               isDark 
-                ? 'bg-white text-[#0A192F] group-hover:bg-[#E6F1FF]' 
-                : 'bg-[#0A192F] text-white group-hover:bg-[#112240]'
-            } p-2 relative rounded-sm transition-colors`}>
-              <MapPin size={24} strokeWidth={2} />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className={`w-1.5 h-1.5 ${isDark ? 'bg-[#0A192F]' : 'bg-white'} rounded-full mt-1`}></div>
-              </div>
+                ? 'bg-white ring-2 ring-white/20 group-hover:ring-white/60 shadow-xs' 
+                : 'bg-white border border-slate-200 group-hover:border-slate-300 shadow-xs'
+            }`}>
+              <img 
+                src={alvaryLogoImg} 
+                alt="Alvary Technologies" 
+                className="h-9 w-9 sm:h-10 sm:w-10 object-contain rounded-xs"
+                loading="eager"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.dataset.triedFallback) {
+                    target.dataset.triedFallback = 'true';
+                    target.src = '/assets/images/alvary_logo.jpg';
+                  }
+                }}
+              />
             </div>
             <div className="flex flex-col">
               <span className={`text-xl font-black tracking-tight leading-none uppercase ${isDark ? 'text-white' : 'text-[#0A192F]'}`}>
@@ -264,6 +284,9 @@ export default function App() {
               </span>
               <span className={`text-[9px] font-mono tracking-[0.2em] leading-none mt-1 uppercase ${isDark ? 'text-blue-100' : 'text-slate-600 font-bold'}`}>
                 Technologies
+              </span>
+              <span className={`text-[8px] font-sans italic tracking-tight hidden sm:block mt-0.5 ${isDark ? 'text-blue-200/70' : 'text-slate-500'}`}>
+                Driven by Precision, Powered by Innovation
               </span>
             </div>
           </div>
@@ -473,8 +496,17 @@ export default function App() {
             <div className="order-2 lg:order-1 relative">
               <div className="aspect-[4/5] bg-blue-100 relative z-10 border-4 border-[#0A192F] p-2">
                 <img 
-                  src="/src/assets/images/young_african_professional_1789644630499.jpg" 
-                  alt="Professional" 
+                  src={professionalImg} 
+                  alt="Alvary Technologies Telematics Lead Professional" 
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.dataset.triedFallback) {
+                      target.dataset.triedFallback = 'true';
+                      target.src = '/assets/images/young_african_professional_1789644630499.jpg';
+                    }
+                  }}
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" 
                 />
               </div>
@@ -572,9 +604,18 @@ export default function App() {
                     <img 
                       src={sol.img} 
                       alt={sol.title} 
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (!target.dataset.triedFallback && sol.fallback) {
+                          target.dataset.triedFallback = 'true';
+                          target.src = sol.fallback;
+                        }
+                      }}
                       className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                     />
-                    <div className="absolute inset-0 border-[12px] border-zinc-900/50"></div>
+                    <div className="absolute inset-0 border-[12px] border-zinc-900/50 pointer-events-none"></div>
                   </div>
                 </div>
               </div>
@@ -1046,10 +1087,23 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             <div className="lg:col-span-1">
               <div className="flex items-center gap-3 mb-6">
-                <div className={`${
-                  isDark ? 'bg-[#233554] text-white' : 'bg-[#0A192F] text-white'
-                } p-2 relative rounded-sm`}>
-                  <MapPin size={24} strokeWidth={2} />
+                <div className={`relative flex items-center justify-center rounded-sm overflow-hidden p-1 ${
+                  isDark ? 'bg-white ring-2 ring-white/20' : 'bg-white border border-slate-200 shadow-xs'
+                }`}>
+                  <img 
+                    src={alvaryLogoImg} 
+                    alt="Alvary Technologies Logo" 
+                    className="h-10 w-10 object-contain rounded-xs"
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.dataset.triedFallback) {
+                        target.dataset.triedFallback = 'true';
+                        target.src = '/assets/images/alvary_logo.jpg';
+                      }
+                    }}
+                  />
                 </div>
                 <div className="flex flex-col">
                   <span className={`text-xl font-black tracking-tight leading-none uppercase ${
@@ -1058,6 +1112,11 @@ export default function App() {
                   <span className={`text-[9px] font-mono tracking-[0.2em] leading-none mt-1 uppercase ${
                     isDark ? 'text-blue-200' : 'text-slate-600 font-bold'
                   }`}>Technologies</span>
+                  <span className={`text-[8px] font-sans italic tracking-tight mt-1 ${
+                    isDark ? 'text-blue-200/70' : 'text-slate-500'
+                  }`}>
+                    Driven by Precision, Powered by Innovation
+                  </span>
                 </div>
               </div>
               <p className={`text-sm leading-relaxed font-medium mb-4 ${
