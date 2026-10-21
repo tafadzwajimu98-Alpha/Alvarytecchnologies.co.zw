@@ -5,7 +5,7 @@ import {
   MessageSquare, Facebook, PhoneCall, Mail, Gauge, 
   Video, Siren, Key, Target, Star, Quote, Crosshair, ArrowUpRight, ArrowRight, HelpCircle, Cookie, Zap
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CatalogModal } from './components/CatalogModal';
 import { QuoteSheet } from './components/QuoteSheet';
 import { SolutionDetailsModal } from './components/SolutionDetailsModal';
@@ -470,16 +470,23 @@ export default function App() {
               isDark ? 'divide-zinc-800 border-[#233554]' : 'divide-slate-200 border-slate-300'
             }`}>
               {STATS.map((stat, i) => (
-                <div key={i} className={`py-8 px-4 flex flex-col items-center justify-center text-center group transition-colors ${
-                  isDark ? 'hover:bg-[#112240]' : 'hover:bg-slate-50'
-                }`}>
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-20px" }}
+                  transition={{ duration: 0.5, delay: i * 0.1, ease: 'easeOut' }}
+                  className={`py-8 px-4 flex flex-col items-center justify-center text-center group transition-colors ${
+                    isDark ? 'hover:bg-[#112240]' : 'hover:bg-slate-50'
+                  }`}
+                >
                   <div className={`text-3xl md:text-4xl font-black mb-2 group-hover:scale-110 transition-transform ${
                     isDark ? 'text-white' : 'text-[#0A192F]'
                   }`}>{stat.value}</div>
                   <div className={`text-[9px] font-mono uppercase tracking-widest ${
                     isDark ? 'text-blue-100' : 'text-slate-600 font-bold'
                   }`}>{stat.label}</div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -493,7 +500,13 @@ export default function App() {
       }`}>
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="order-2 lg:order-1 relative">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+              className="order-2 lg:order-1 relative"
+            >
               <div className="aspect-[4/5] bg-blue-100 relative z-10 border-4 border-[#0A192F] p-2">
                 <img 
                   src={professionalImg} 
@@ -511,9 +524,15 @@ export default function App() {
                 />
               </div>
               <div className="absolute -bottom-6 -right-6 w-full h-full bg-white text-[#0A192F] z-0 border-4 border-[#0A192F]"></div>
-            </div>
+            </motion.div>
             
-            <div className="order-1 lg:order-2">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
+              className="order-1 lg:order-2"
+            >
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-[2px] bg-[#0A192F]"></div>
                 <h2 className="text-xs font-mono uppercase tracking-widest text-slate-700 font-bold">
@@ -535,7 +554,7 @@ export default function App() {
                   <div className="text-sm text-slate-600 font-mono mt-1">Advanced Security & Support</div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -557,9 +576,13 @@ export default function App() {
           </div>
 
           <div className="space-y-6">
-            {SOLUTIONS.map((sol) => (
-              <div 
+            {SOLUTIONS.map((sol, index) => (
+              <motion.div 
                 key={sol.id} 
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.65, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
                 className={`group relative border p-6 md:p-12 transition-colors overflow-hidden ${
                   isDark 
                     ? 'bg-[#112240] border-[#233554] hover:border-white text-white' 
@@ -618,7 +641,7 @@ export default function App() {
                     <div className="absolute inset-0 border-[12px] border-zinc-900/50 pointer-events-none"></div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -663,8 +686,12 @@ export default function App() {
             isDark ? 'bg-[#233554] border-[#233554]' : 'bg-slate-300 border-slate-300'
           } border`}>
             {PRODUCTS.map((prod, i) => (
-              <div 
+              <motion.div 
                 key={i} 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.45, delay: (i % 4) * 0.08 + Math.floor(i / 4) * 0.06, ease: 'easeOut' }}
                 onClick={() => openCatalog(prod.category)}
                 className={`${
                   isDark 
@@ -694,7 +721,7 @@ export default function App() {
                 }`}>
                   View Specs <ArrowRight size={10} />
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -714,8 +741,12 @@ export default function App() {
             isDark ? 'bg-[#0A192F] border-[#0A192F]' : 'bg-slate-300 border-slate-300'
           } border`}>
             {ADVANTAGES.map((adv, i) => (
-              <div 
+              <motion.div 
                 key={i} 
+                initial={{ opacity: 0, y: 32 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: 'easeOut' }}
                 className={`${
                   isDark 
                     ? 'bg-[#112240] border-[#233554] hover:bg-[#1b3262] text-white' 
@@ -735,7 +766,7 @@ export default function App() {
                 }`}>
                   {adv.desc}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -772,8 +803,12 @@ export default function App() {
             {FAQS.map((faq, index) => {
               const isOpen = openFaqIndex === index;
               return (
-                <div 
+                <motion.div 
                   key={faq.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-20px" }}
+                  transition={{ duration: 0.4, delay: index * 0.05, ease: 'easeOut' }}
                   className={`border transition-all duration-200 rounded-xs ${
                     isOpen 
                       ? (isDark ? 'border-white bg-[#112240]' : 'border-[#0A192F] bg-white shadow-sm') 
@@ -823,15 +858,21 @@ export default function App() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
+                </motion.div>
               );
             })}
           </div>
 
           {/* Quick Contact Fitment Box */}
-          <div className={`mt-12 p-8 border flex flex-col md:flex-row items-center justify-between gap-6 rounded-xs ${
-            isDark ? 'bg-[#112240] border-[#233554] text-white' : 'bg-white border-2 border-[#0A192F] text-[#0A192F] shadow-sm'
-          }`}>
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-30px" }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className={`mt-12 p-8 border flex flex-col md:flex-row items-center justify-between gap-6 rounded-xs ${
+              isDark ? 'bg-[#112240] border-[#233554] text-white' : 'bg-white border-2 border-[#0A192F] text-[#0A192F] shadow-sm'
+            }`}
+          >
             <div>
               <div className={`text-xs font-mono uppercase tracking-widest mb-1 ${
                 isDark ? 'text-blue-200' : 'text-slate-600 font-bold'
@@ -856,7 +897,7 @@ export default function App() {
             >
               <Phone size={14} /> Schedule Mobile Fitment
             </a>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -900,11 +941,17 @@ export default function App() {
             </div>
           </div>
 
-          <div className={`p-8 md:p-16 relative shadow-sm border-2 ${
-            isDark 
-              ? 'bg-[#112240] border-[#233554] text-white' 
-              : 'bg-white border-4 border-[#0A192F] text-[#0A192F]'
-          }`}>
+          <motion.div 
+            initial={{ opacity: 0, y: 35 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className={`p-8 md:p-16 relative shadow-sm border-2 ${
+              isDark 
+                ? 'bg-[#112240] border-[#233554] text-white' 
+                : 'bg-white border-4 border-[#0A192F] text-[#0A192F]'
+            }`}
+          >
             <Quote className={`absolute top-8 right-8 w-24 h-24 z-0 pointer-events-none ${
               isDark ? 'text-white/5' : 'text-slate-100'
             }`} />
@@ -979,7 +1026,7 @@ export default function App() {
                 </motion.div>
               </AnimatePresence>
             </div>
-          </div>
+          </motion.div>
           
           <div className="flex md:hidden gap-2 mt-8">
             <button 
@@ -1012,7 +1059,13 @@ export default function App() {
       <section className={`py-24 text-center border-b ${
         isDark ? 'bg-[#0A192F] text-white border-[#233554]' : 'bg-[#F8FAFC] text-[#0A192F] border-slate-300'
       }`}>
-        <div className="container mx-auto px-6 max-w-4xl">
+        <motion.div 
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.65, ease: 'easeOut' }}
+          className="container mx-auto px-6 max-w-4xl"
+        >
           <Crosshair size={48} className={`mx-auto mb-8 ${isDark ? 'text-white' : 'text-[#0A192F]'}`} />
           <h2 className={`text-5xl md:text-7xl font-black uppercase tracking-tighter mb-8 leading-[0.9] ${
             isDark ? 'text-white' : 'text-[#0A192F]'
@@ -1036,7 +1089,7 @@ export default function App() {
               Request Consultation <ArrowUpRight size={18} />
             </button>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Connect / Contact Grid */}
@@ -1048,11 +1101,15 @@ export default function App() {
             isDark ? 'bg-[#233554] border-[#233554]' : 'bg-slate-300 border-slate-300'
           } border`}>
             {CONTACTS.map((contact, i) => (
-              <a 
+              <motion.a 
                 key={i} 
                 href={contact.link} 
                 target="_blank" 
                 rel="noreferrer" 
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.45, delay: i * 0.08, ease: 'easeOut' }}
                 className={`${
                   isDark 
                     ? 'bg-[#0A192F] hover:bg-[#112240] text-white' 
@@ -1073,7 +1130,7 @@ export default function App() {
                 <span className={`text-xs font-mono uppercase tracking-widest mt-auto font-bold ${
                   isDark ? 'text-white group-hover:text-blue-200' : 'text-[#0A192F] group-hover:text-blue-700'
                 }`}>{contact.cta}</span>
-              </a>
+              </motion.a>
             ))}
           </div>
         </div>
